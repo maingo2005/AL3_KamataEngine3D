@@ -24,6 +24,7 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
+
 	// 自キャラの生成
 	player_ = new Player();
 	// 自キャラの初期化
