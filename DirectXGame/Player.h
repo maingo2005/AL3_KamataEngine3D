@@ -4,7 +4,7 @@
 class Player {
 public:
 	/// 初期化
-	void Initialize(Model* model, uint32_t textureHandle);
+	void Initialize(Model* model, uint32_t textureHandle, ViewProjection* viewProjection);
 
 	/// 更新
 	void Update();
@@ -19,4 +19,6 @@ private:
 	Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+
+	ViewProjection* viewProjection_ = nullptr;
 };

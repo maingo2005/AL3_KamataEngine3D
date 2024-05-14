@@ -56,6 +56,7 @@ private: // メンバ変数
 	WorldTransform worldTransform_;
 	// ビュープロジェクションの初期化
 	ViewProjection viewProjection_;
+
 	//自キャラ
 	Player* player_ = nullptr;
 };
