@@ -1,9 +1,9 @@
 #include "GameScene.h"
-#include "TextureManager.h"
-#include <cassert>
 #include "AxisIndicator.h"
 #include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
+#include "TextureManager.h"
+#include <cassert>
 
 GameScene::GameScene() {}
 
@@ -30,14 +30,14 @@ void GameScene::Initialize() {
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 	// サウンドデータの読み込み
-	soundDataHandle_ = audio_->LoadWave("");
+	soundDataHandle_ = audio_->LoadWave("fanfare.wav");
 	// 音声再生
 	audio_->PlayWave(soundDataHandle_);
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 	// ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection_);
 	// デバックカメラの生成
-	debugCamera_ = new DebugCamera(0, 0);
+	debugCamera_ = new DebugCamera(1280, 720);
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
@@ -60,17 +60,15 @@ void GameScene::Update() {
 	// デバックテキストの表示
 	ImGui::Begin("Debug1");
 	// float3入力ボックス
-	ImGui::inputFloat3("inputFloat3", inputFloat3);
+	ImGui::InputFloat3("inputFloat3", inputFloat3);
 	// float3スライダー
-	ImGui::inputFloat3("inputFloat3", inputFloat3, 0.0f, 1.0f);
+	ImGui::SliderFloat3("inputFloat3", inputFloat3, 0.0f, 1.0f);
 #ifdef _DEBUG
 	ImGui::Text("Kamata Tarou %d.%d.%d", 2050, 12, 31);
 #endif
 	ImGui::End();
 	// デモウィンドウの表示を有効化
 	ImGui::ShowDemoWindow();
-	// ライン描画
-	PrimitiveDrawer::GetInstance()->DrawLine3d({0, 0, 0}, {0, 10, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
 	// デバックカメラの更新
 	debugCamera_->Update();
 }
@@ -101,9 +99,11 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	
+
 	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
+	// ライン描画
+	PrimitiveDrawer::GetInstance()->DrawLine3d({0, 0, 0}, {0, 10, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
