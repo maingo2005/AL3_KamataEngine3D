@@ -8,8 +8,12 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	delete model_;
 	delete modelBlock_;
+	delete modelTama_;
 	// 自キャラの開放
 	delete player_;
+
+	// 球の開放
+	//delete tama_;
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -33,9 +37,11 @@ void GameScene::Initialize() {
 	// 3Dモデルの生成
 	model_ = Model::Create();
 	modelBlock_ = Model::Create();
+	modelTama_ = Model::CreateFromOBJ("tama", true);
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 	// ビュープロジェクションの初期化
+	viewProjection_.farZ;
 	viewProjection_.Initialize();
 
 	// 自キャラの生成
@@ -43,12 +49,17 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	player_->Initialize(model_, textureHandle_, &viewProjection_);
 
+	//// 球の生成
+	//tama_ = new Tama();
+	//// 球の初期化
+	//tama_->Initialize(model_, &viewProjection_);
+
 	// 要素数
 	const uint32_t kNumBlockVirtical = 10;
 	const uint32_t kNumBlockHorizontal = 20;
 	// ブロック1個分の横幅
 	const float kBlockWidth = 2.0f;
-	const float kBlockHeight = 2.0f; 
+	const float kBlockHeight = 2.0f;
 	// 要素数を変更する
 	worldTransformBlocks_.resize(kNumBlockVirtical);
 
@@ -100,7 +111,10 @@ void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
 
-// 縦横ブロック更新
+	// 球の更新
+	//tama_->Update();
+
+	// 縦横ブロック更新
 	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlockYoko : worldTransformBlockTate) {
 			if (!worldTransformBlockYoko)
@@ -139,7 +153,9 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	//player_->Draw();
+	// player_->Draw();
+
+	//tama_->Draw();
 
 	// 縦横ブロック描画
 	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {

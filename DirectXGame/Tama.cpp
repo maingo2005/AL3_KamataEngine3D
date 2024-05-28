@@ -1,7 +1,7 @@
-#include "Player.h"
+#include "Tama.h"
 #include <cassert>
 
-void Player::Initialize(Model* model, uint32_t textureHandle, ViewProjection* viewProjection) {
+void Tama::Initialize(Model* model,ViewProjection* viewProjection) {
 	// NULLポインタチェック
 	assert(model);
 	// ワールドトランスフォームの初期化
@@ -9,16 +9,15 @@ void Player::Initialize(Model* model, uint32_t textureHandle, ViewProjection* vi
 
 	// 引数の内容をメンバ変数に記録
 	model_ = model;
-	textureHandle_ = textureHandle;
 	viewProjection_ = viewProjection;
 }
 
-void Player::Update() {
+void Tama::Update() {
 	// 行列を定数バッファに転送
-	worldTransform_.UpdateMatrix();
+	worldTransform_.TransferMatrix();
 }
 
-void Player::Draw() {
+void Tama::Draw() {
 	// 3Dモデルの描画
-	model_->Draw(worldTransform_, *viewProjection_, textureHandle_);
+	model_->Draw(worldTransform_, *viewProjection_);
 }
