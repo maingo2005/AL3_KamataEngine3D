@@ -8,7 +8,7 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	delete model_;
 	delete modelBlock_;
-	delete modelTama_;
+	delete modelSphere_;
 	// 自キャラの開放
 	delete player_;
 
@@ -34,7 +34,7 @@ void GameScene::Initialize() {
 	// 3Dモデルの生成
 	model_ = Model::Create();
 	modelBlock_ = Model::Create();
-	modelTama_ = Model::CreateFromOBJ("tama", true);
+	modelSphere_ = Model::CreateFromOBJ("sphere", true);
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 	// ビュープロジェクションの初期化

@@ -56,7 +56,7 @@ private: // メンバ変数
 	// 3Dモデル
 	Model* model_ = nullptr;
 	Model* modelBlock_ = nullptr;
-	Model* modelTama_ = nullptr;
+	Model* modelSphere_ = nullptr;
 	// ワールドトランスフォームの初期化
 	WorldTransform worldTransform_;
 	// ビュープロジェクションの初期化
