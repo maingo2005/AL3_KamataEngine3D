@@ -10,8 +10,6 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
-//#include "Tama.h"
-
 #include <vector>
 
 /// <summary>
@@ -74,7 +72,4 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 	// デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
-
-	// 球キャラ
-	//Tama* tama_ = nullptr;
 };

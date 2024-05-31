@@ -12,9 +12,6 @@ GameScene::~GameScene() {
 	// 自キャラの開放
 	delete player_;
 
-	// 球の開放
-	//delete tama_;
-
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -48,11 +45,6 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	// 自キャラの初期化
 	player_->Initialize(model_, textureHandle_, &viewProjection_);
-
-	//// 球の生成
-	//tama_ = new Tama();
-	//// 球の初期化
-	//tama_->Initialize(model_, &viewProjection_);
 
 	// 要素数
 	const uint32_t kNumBlockVirtical = 10;
@@ -111,9 +103,6 @@ void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
 
-	// 球の更新
-	//tama_->Update();
-
 	// 縦横ブロック更新
 	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlockYoko : worldTransformBlockTate) {
@@ -154,8 +143,6 @@ void GameScene::Draw() {
 	/// </summary>
 
 	// player_->Draw();
-
-	//tama_->Draw();
 
 	// 縦横ブロック描画
 	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
