@@ -12,6 +12,8 @@
 
 #include <vector>
 
+#include "Skydome.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -56,7 +58,7 @@ private: // メンバ変数
 	// 3Dモデル
 	Model* model_ = nullptr;
 	Model* modelBlock_ = nullptr;
-	Model* modelSphere_ = nullptr;
+	Model* modelSkydome_ = nullptr;
 	// ワールドトランスフォームの初期化
 	WorldTransform worldTransform_;
 	// ビュープロジェクションの初期化
@@ -72,4 +74,7 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 	// デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
+
+	// 天球
+	Skydome* skydome_ = nullptr;
 };

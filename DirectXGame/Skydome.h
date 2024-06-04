@@ -1,7 +1,7 @@
 #include "Model.h"
 #include "WorldTransform.h"
 
-class Sphere {
+class Skydome {
 public:
 	/// <summary>
 	/// 初期化
@@ -21,7 +21,7 @@ public:
 private:
 	// ワールドトランスフォームの初期化
 	WorldTransform worldTransform_;
-	// 3Dモデル
+	// モデル
 	Model* model_ = nullptr;
 
 	ViewProjection* viewProjection_ = nullptr;
