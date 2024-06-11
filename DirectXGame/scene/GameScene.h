@@ -14,6 +14,8 @@
 
 #include "Skydome.h"
 
+#include "MapChipField.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -45,6 +47,8 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void GenerateBlocks();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -59,6 +63,7 @@ private: // メンバ変数
 	Model* model_ = nullptr;
 	Model* modelBlock_ = nullptr;
 	Model* modelSkydome_ = nullptr;
+	Model* modelMap_ = nullptr;
 	// ワールドトランスフォームの初期化
 	WorldTransform worldTransform_;
 	// ビュープロジェクションの初期化
@@ -77,4 +82,7 @@ private: // メンバ変数
 
 	// 天球
 	Skydome* skydome_ = nullptr;
+
+	//マップチップの描画
+	MapChipField* mapChipField_ = nullptr;
 };

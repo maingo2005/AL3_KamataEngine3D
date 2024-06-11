@@ -9,6 +9,8 @@ GameScene::~GameScene() {
 	delete model_;
 	delete modelBlock_;
 	delete modelSkydome_;
+	delete mapChipField_;
+	delete modelMap_;
 	// 自キャラの開放
 	delete player_;
 
@@ -51,22 +53,34 @@ void GameScene::Initialize() {
 	// 天球の初期化
 	skydome_->Initialize(modelSkydome_, &viewProjection_);
 
+	// マップチップの描画の生成
+	mapChipField_ = new MapChipField;
+	mapChipField_->LoadMapChipCsv("Resources/map.csv");
+	// マップチップの描画の初期化
+	mapChipField_->Initialize(modelMap_, &viewProjection_);
+	GenerateBlocks();
+
+	// デバッグカメラの生成
+	debugCamera_ = new DebugCamera(1280, 720);
+}
+
+void GameScene::GenerateBlocks() {
 	// 要素数
-	const uint32_t kNumBlockVirtical = 10;
-	const uint32_t kNumBlockHorizontal = 20;
+	const uint32_t numBlockVirtical = mapChipField_->GetkNumkBlockVirtical();
+	const uint32_t numBlockHorizontal = mapChipField_->GetkNumkBlockHorizontal();
 	// ブロック1個分の横幅
 	const float kBlockWidth = 2.0f;
 	const float kBlockHeight = 2.0f;
 	// 要素数を変更する
-	worldTransformBlocks_.resize(kNumBlockVirtical);
+	worldTransformBlocks_.resize(numBlockVirtical);
 
 	// キューブの生成
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
+	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+		worldTransformBlocks_[i].resize(numBlockHorizontal);
 	}
 
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
 			if (j % 2 == (i % 2)) {
 				worldTransformBlocks_[i][j] = new WorldTransform();
 				worldTransformBlocks_[i][j]->Initialize();
@@ -77,9 +91,6 @@ void GameScene::Initialize() {
 			}
 		}
 	}
-
-	// デバッグカメラの生成
-	debugCamera_ = new DebugCamera(1280, 720);
 }
 
 void GameScene::Update() {
@@ -121,6 +132,8 @@ void GameScene::Update() {
 
 	// 天球の更新
 	skydome_->Update();
+
+	mapChipField_->Update();
 }
 
 void GameScene::Draw() {
@@ -153,6 +166,8 @@ void GameScene::Draw() {
 	// player_->Draw();
 
 	skydome_->Draw();
+
+	mapChipField_->Draw();
 
 	// 縦横ブロック描画
 	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
