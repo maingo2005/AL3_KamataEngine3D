@@ -56,7 +56,7 @@ void GameScene::Initialize() {
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	// マップチップの描画の初期化
-	mapChipField_->Initialize(modelBlock_, &viewProjection_);
+	mapChipField_->Initialize(model_, &viewProjection_);
 	GenerateBlocks();
 
 	// デバッグカメラの生成
