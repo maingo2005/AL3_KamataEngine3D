@@ -10,7 +10,6 @@ GameScene::~GameScene() {
 	delete modelBlock_;
 	delete modelSkydome_;
 	delete mapChipField_;
-	delete modelMap_;
 	// 自キャラの開放
 	delete player_;
 
@@ -57,7 +56,7 @@ void GameScene::Initialize() {
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	// マップチップの描画の初期化
-	mapChipField_->Initialize(modelMap_, &viewProjection_);
+	mapChipField_->Initialize(modelBlock_, &viewProjection_);
 	GenerateBlocks();
 
 	// デバッグカメラの生成
