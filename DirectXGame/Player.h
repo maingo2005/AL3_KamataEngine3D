@@ -1,10 +1,15 @@
 #include "Model.h"
 #include "WorldTransform.h"
 
+enum class LRDirection {
+	kRight,
+	kLeft,
+};
+
 class Player {
 public:
 	/// 初期化
-	void Initialize(Model* model, uint32_t textureHandle, ViewProjection* viewProjection);
+	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
 
 	/// 更新
 	void Update();
@@ -21,4 +26,12 @@ private:
 	uint32_t textureHandle_ = 0u;
 
 	ViewProjection* viewProjection_ = nullptr;
+
+	Vector3 velocity_ = {};
+
+	LRDirection lrDirection_ = LRDirection::kRight;
+
+	static inline const float kAcceleratio = 10;
+	static inline const float kAttenuation = 10;
+	static inline const float kLimitRunSpeed = 10;
 };

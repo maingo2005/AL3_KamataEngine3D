@@ -45,8 +45,11 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成
 	player_ = new Player();
+
+	Vector3 playerPosition = mapChipField_->MapChipPositionByIndex(90, 0);
+
 	// 自キャラの初期化
-	player_->Initialize(model_, textureHandle_, &viewProjection_);
+	player_->Initialize(model_, &viewProjection_, playerPosition);
 
 	// 天球の生成
 	skydome_ = new Skydome();
