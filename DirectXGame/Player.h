@@ -31,7 +31,19 @@ private:
 
 	LRDirection lrDirection_ = LRDirection::kRight;
 
-	static inline const float kAcceleratio = 10;
-	static inline const float kAttenuation = 10;
-	static inline const float kLimitRunSpeed = 10;
+	//旋回開始時の角度
+	float turnFirstRotationY_ = 0.0f;
+	//旋回タイマー
+	float turnTimer_ = 0.0f;
+
+	//接地状態のフラグ
+	bool onGround_ = true;
+
+	static inline const float kAcceleratio = 10.0f;
+	static inline const float kAttenuation = 10.0f;
+	static inline const float kLimitRunSpeed = 10.0f;
+	static inline const float kTimeTurn = 0.3f;
+	static inline const float kGravityAcceleration = 0.98f;
+	static inline const float kLimitFallSpeed = 0.5f;
+	static inline const float kJumpAcceleration = 20.0f;
 };

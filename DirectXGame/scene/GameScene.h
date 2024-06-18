@@ -63,7 +63,6 @@ private: // メンバ変数
 	Model* model_ = nullptr;
 	Model* modelBlock_ = nullptr;
 	Model* modelSkydome_ = nullptr;
-	Model* modelMap_ = nullptr;
 	// ワールドトランスフォームの初期化
 	WorldTransform worldTransform_;
 	// ビュープロジェクションの初期化

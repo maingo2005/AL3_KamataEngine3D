@@ -10,7 +10,6 @@ GameScene::~GameScene() {
 	delete modelBlock_;
 	delete modelSkydome_;
 	delete mapChipField_;
-	delete modelMap_;
 	// 自キャラの開放
 	delete player_;
 
@@ -43,14 +42,6 @@ void GameScene::Initialize() {
 	viewProjection_.farZ;
 	viewProjection_.Initialize();
 
-	// 自キャラの生成
-	player_ = new Player();
-
-	Vector3 playerPosition = mapChipField_->MapChipPositionByIndex(90, 0);
-
-	// 自キャラの初期化
-	player_->Initialize(model_, &viewProjection_, playerPosition);
-
 	// 天球の生成
 	skydome_ = new Skydome();
 	// 天球の初期化
@@ -60,8 +51,16 @@ void GameScene::Initialize() {
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	// マップチップの描画の初期化
-	mapChipField_->Initialize(modelMap_, &viewProjection_);
+	mapChipField_->Initialize(model_, &viewProjection_);
 	GenerateBlocks();
+
+	// 自キャラの生成
+	player_ = new Player();
+
+	Vector3 playerPosition = mapChipField_->MapChipPositionByIndex(90, 0);
+
+	// 自キャラの初期化
+	player_->Initialize(model_, &viewProjection_, playerPosition);
 
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);

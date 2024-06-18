@@ -32,7 +32,7 @@ void MapChipField::ResetMapChipData() {
 	mapChipData_.data.clear();
 	mapChipData_.data.resize(kNumkBlockVirtical);
 	for (std::vector<MapChipType>& mapChipDataLine : mapChipData_.data) {
-		mapChipDataLine.resize(kNumkBlockVirtical);
+		mapChipDataLine.resize(kNumkBlockHorizontal);
 	}
 }
 
