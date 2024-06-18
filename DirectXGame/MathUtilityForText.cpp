@@ -11,18 +11,18 @@ Vector3& operator+=(Vector3& lhs, const Vector3& rhv) {
 }
 
 // アフィン変換行列の作成
-Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate) {
-	// 回転
-	Matrix4x4 RotateMatY = {cosf(rot.y), 0, -sinf(rot.y), 0, 0, 1, 0, 0, sinf(rot.y), 0, cosf(rot.y), 0, 0, 0, 0, 1};
-
-	// 平行行列
-	Matrix4x4 TranslatMat = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, translate.x, translate.y, translate.z, 1};
-
-	// 回転*平行行列だけのワールド変換行列
-	Matrix4x4 ansMat = MatrixMultiply(RotateMatY, TranslatMat);
-
-	return ansMat;
-}
+//Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate) {
+//	// 回転
+//	Matrix4x4 RotateMatY = {cosf(rot.y), 0, -sinf(rot.y), 0, 0, 1, 0, 0, sinf(rot.y), 0, cosf(rot.y), 0, 0, 0, 0, 1};
+//
+//	// 平行行列
+//	Matrix4x4 TranslatMat = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, translate.x, translate.y, translate.z, 1};
+//
+//	// 回転*平行行列だけのワールド変換行列
+//	Matrix4x4 ansMat = MatrixMultiply(RotateMatY, TranslatMat);
+//
+//	return ansMat;
+//}
 
 // 行列の掛け算
 Matrix4x4 MatrixMultiply(Matrix4x4& m1, Matrix4x4& m2) {

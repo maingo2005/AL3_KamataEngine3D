@@ -17,6 +17,8 @@ public:
 	/// 描画
 	void Draw();
 
+	const WorldTransform& GetWorldTransform() const { return worldTransform_; }
+
 private:
 	// ワールドトランスフォームの初期化
 	WorldTransform worldTransform_;
