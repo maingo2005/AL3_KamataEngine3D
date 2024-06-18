@@ -64,6 +64,15 @@ void GameScene::Initialize() {
 
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
+
+	//カメラの生成
+	cameraController_ = new CameraController();
+	// カメラの初期化
+	cameraController_->Initialize();
+	// カメラのセット
+	cameraController_->SetTarget(player_);
+	// カメラのリセット
+	cameraController_->Reset();
 }
 
 void GameScene::GenerateBlocks() {
@@ -136,6 +145,9 @@ void GameScene::Update() {
 	skydome_->Update();
 
 	mapChipField_->Update();
+
+	// カメラの更新
+	cameraController_->Update();
 }
 
 void GameScene::Draw() {

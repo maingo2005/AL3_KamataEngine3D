@@ -34,10 +34,12 @@ private:
 	//旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;
 	//旋回タイマー
-	float turnTimer_ = 0.0f;
+	float turnTimer_ = 0.7f;
 
 	//接地状態のフラグ
 	bool onGround_ = true;
+
+	bool landing = false;
 
 	static inline const float kAcceleratio = 10.0f;
 	static inline const float kAttenuation = 10.0f;

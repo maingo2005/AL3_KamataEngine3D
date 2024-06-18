@@ -16,6 +16,8 @@
 
 #include "MapChipField.h"
 
+#include "CameraController.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -84,4 +86,6 @@ private: // メンバ変数
 
 	//マップチップの描画
 	MapChipField* mapChipField_ = nullptr;
+
+	CameraController* cameraController_ = nullptr;
 };
