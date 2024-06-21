@@ -19,6 +19,8 @@ public:
 
 	const WorldTransform& GetWorldTransform() const { return worldTransform_; }
 
+	const Vector3& GetVelocity() const { return velocity_; }
+
 private:
 	// ワールドトランスフォームの初期化
 	WorldTransform worldTransform_;
@@ -33,12 +35,12 @@ private:
 
 	LRDirection lrDirection_ = LRDirection::kRight;
 
-	//旋回開始時の角度
+	// 旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;
-	//旋回タイマー
+	// 旋回タイマー
 	float turnTimer_ = 0.7f;
 
-	//接地状態のフラグ
+	// 接地状態のフラグ
 	bool onGround_ = true;
 
 	bool landing = false;
