@@ -57,7 +57,7 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 
-	Vector3 playerPosition = mapChipField_->MapChipPositionByIndex(90, 0);
+	Vector3 playerPosition = mapChipField_->MapChipPositionByIndex(30, 0);
 
 	// 自キャラの初期化
 	player_->Initialize(model_, &viewProjection_, playerPosition);
@@ -180,7 +180,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	// player_->Draw();
+	player_->Draw();
 
 	skydome_->Draw();
 
