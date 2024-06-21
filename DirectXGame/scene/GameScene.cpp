@@ -36,6 +36,7 @@ void GameScene::Initialize() {
 	model_ = Model::Create();
 	modelBlock_ = Model::Create();
 	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
+
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 	// ビュープロジェクションの初期化
@@ -57,25 +58,13 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 
-	Vector3 playerPosition = mapChipField_->MapChipPositionByIndex(90, 0);
+	Vector3 playerPosition = mapChipField_->MapChipPositionByIndex(30, 0);
 
 	// 自キャラの初期化
 	player_->Initialize(model_, &viewProjection_, playerPosition);
 
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
-
-	//カメラの生成
-	cameraController_ = new CameraController();
-	// カメラの初期化
-	cameraController_->Initialize();
-	// カメラのセット
-	cameraController_->SetTarget(player_);
-	// カメラのリセット
-	cameraController_->Reset();
-
-	CameraController::Rect cameraArea = {12.0f, 100 - 12.0f, 6.0f, 6.0f};
-	cameraController_->SetMovableArea(cameraArea);
 }
 
 void GameScene::GenerateBlocks() {
@@ -148,9 +137,6 @@ void GameScene::Update() {
 	skydome_->Update();
 
 	mapChipField_->Update();
-
-	// カメラの更新
-	cameraController_->Update();
 }
 
 void GameScene::Draw() {
@@ -180,7 +166,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	// player_->Draw();
+	player_->Draw();
 
 	skydome_->Draw();
 

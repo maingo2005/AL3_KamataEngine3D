@@ -17,10 +17,6 @@ public:
 	/// 描画
 	void Draw();
 
-	const WorldTransform& GetWorldTransform() const { return worldTransform_; }
-
-	const Vector3& GetVelocity() const { return velocity_; }
-
 private:
 	// ワールドトランスフォームの初期化
 	WorldTransform worldTransform_;
@@ -45,11 +41,11 @@ private:
 
 	bool landing = false;
 
-	static inline const float kAcceleratio = 10.0f;
-	static inline const float kAttenuation = 10.0f;
-	static inline const float kLimitRunSpeed = 10.0f;
+	static inline const float kAcceleratio = 1.0f;
+	static inline const float kAttenuation = 0.1f;
+	static inline const float kLimitRunSpeed = 0.1f;
 	static inline const float kTimeTurn = 0.3f;
 	static inline const float kGravityAcceleration = 0.98f;
 	static inline const float kLimitFallSpeed = 0.5f;
-	static inline const float kJumpAcceleration = 20.0f;
+	static inline const float kJumpAcceleration = 3.0f;
 };
