@@ -6,9 +6,13 @@
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
+	// モデルの開放
 	delete model_;
+	// ブロックの開放
 	delete modelBlock_;
+	// 天球の開放
 	delete modelSkydome_;
+	// マップチップの開放
 	delete mapChipField_;
 	// 自キャラの開放
 	delete player_;
@@ -34,7 +38,7 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("mario.jpg");
 	// 3Dモデルの生成
 	model_ = Model::Create();
-	modelBlock_ = Model::Create();
+	modelBlock_ = Model::CreateFromOBJ("block");
 	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
@@ -51,7 +55,7 @@ void GameScene::Initialize() {
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	// マップチップの描画の初期化
-	mapChipField_->Initialize(model_, &viewProjection_);
+	mapChipField_->Initialize(modelBlock_, &viewProjection_);
 	GenerateBlocks();
 
 	// 自キャラの生成

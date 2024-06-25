@@ -65,6 +65,19 @@ Vector3& operator+=(Vector3& lhs, const Vector3& rhv) {
 	return lhs;
 }
 
+// Vector3の掛け算
+Vector3& operator*=(Vector3& v, float s) {
+	v.x += s;
+	v.y += s;
+	v.z += s;
+	return v;
+}
+
+const Vector3 operator*(const Vector3& v, float s) { 
+	Vector3 temp(v);
+	return temp *= s;
+}
+
 float EaseInOut(float x1, float x2, float t) {
 	float easedT = -(std::cosf(std::numbers::pi_v<float> * t) - 1.0f) / 2.0f;
 	return Lerp(x1, x2, easedT);

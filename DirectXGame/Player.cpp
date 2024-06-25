@@ -15,7 +15,7 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 	worldTransform_.translation_.y = std::numbers::pi_v<float> / 2.0f;
 
 	// 引数の内容をメンバ変数に記録
-	model_ = model;
+	model_ = Model::CreateFromOBJ("player");
 	// textureHandle_ = textureHandle;
 	viewProjection_ = viewProjection;
 }
