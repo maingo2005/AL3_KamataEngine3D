@@ -1,6 +1,7 @@
 #include <cstdint>
 #include <stdint.h>
 #include <vector>
+
 #include "Model.h"
 #include "WorldTransform.h"
 #include "Vector3.h"
@@ -16,6 +17,19 @@ struct MapChipData {
 
 class MapChipField {
 public:
+
+	struct IndexSet {
+		uint32_t xIndex;
+		uint32_t yIndex;
+	};
+
+	struct Rect {
+		float left;   //左端
+		float right;  //右端
+		float bottom; //下端
+		float top;	  //上端
+	};
+
 	/// 初期化
 	void Initialize(Model* model, ViewProjection* viewProjection);
 
@@ -33,8 +47,16 @@ public:
 
 	Vector3 MapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
 
+	Vector3 GetmapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
+
 	uint32_t GetkNumkBlockVirtical();
 	uint32_t GetkNumkBlockHorizontal();
+
+	IndexSet GetMapChipIndexSetByPosition(const Vector3& position);
+
+	Rect GetRectByIndex(uint32_t xIndex, uint32_t yIndex);
+
+	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
 
 private:
 	static inline const float kBlockWidth = 1.0f;

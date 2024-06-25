@@ -1,4 +1,5 @@
 #include "MapChipField.h"
+
 #include <cassert>
 #include <fstream>
 #include <map>
@@ -79,3 +80,27 @@ Vector3 MapChipField::MapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) {
 uint32_t MapChipField::GetkNumkBlockVirtical() { return kNumkBlockVirtical; }
 
 uint32_t MapChipField::GetkNumkBlockHorizontal() { return kNumkBlockHorizontal; }
+
+MapChipField::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
+	MapChipField::IndexSet indexSet = {};
+	indexSet.xIndex = ((uint32_t)position.x + (uint32_t)MapChipField::kBlockWidth / 2) / (uint32_t)MapChipField::kBlockWidth;
+	indexSet.yIndex = MapChipField::kNumkBlockVirtical - 1 - ((uint32_t)position.y + (uint32_t)MapChipField::kBlockHeight / 2) / (uint32_t)MapChipField::kBlockHeight;
+
+	return indexSet;
+}
+
+MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex) {
+	Vector3 center = GetmapChipPositionByIndex(xIndex, yIndex);
+
+	Rect rect;
+	rect.left = center.x - kBlockWidth / 2.0f;
+	rect.right = 0;
+	rect.bottom = 0;
+	rect.top = 0;
+
+	return rect;
+}
+
+MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex) { return MapChipType(xIndex - yIndex); }
+
+Vector3 MapChipField::GetmapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) { return Vector3(xIndex, yIndex); }

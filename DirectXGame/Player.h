@@ -1,6 +1,8 @@
 #include "Model.h"
 #include "WorldTransform.h"
 
+class MapChipField;
+
 enum class LRDirection {
 	kRight,
 	kLeft,
@@ -8,6 +10,28 @@ enum class LRDirection {
 
 class Player {
 public:
+	// マップチップとの当たり判定情報
+	struct CollisionMapInfo {
+		// 天井衝突フラグ
+		bool ceiling = false;
+		// 着地フラグ
+		bool landing = false;
+		// 壁接触フラグ
+		bool hitWall = false;
+		// 移動量
+		Vector3 move;
+	};
+
+	// 角
+	enum Corner {
+		kRightBottom, // 右下
+		kLeftBottom,  // 左下
+		kRightTop,    // 右上
+		kLeftTop,     // 左上
+
+		kNumCorner // 要素数
+	};
+
 	/// 初期化
 	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
 
@@ -20,6 +44,28 @@ public:
 	const WorldTransform& GetWorldTransform() const { return worldTransform_; }
 
 	const Vector3& GetVelocity() const { return velocity_; }
+
+	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
+
+	void InMovement();
+
+	void CollisionDetection(CollisionMapInfo& info);
+
+	Vector3 CornerPosition(const Vector3& center, Corner corner);
+
+	// 上
+	void Top(CollisionMapInfo& info);
+	// 下
+	void Bottom(CollisionMapInfo& info);
+	// 右
+	void Right(CollisionMapInfo& info);
+	// 左
+	void Left(CollisionMapInfo& info);
+
+	// 判断結果を反映して移動させる
+	void ReflectionMovement(const CollisionMapInfo& info);
+	// 天井に接触している場合の処理
+	void CeilingContact(const CollisionMapInfo& info);
 
 private:
 	// ワールドトランスフォームの初期化
@@ -34,6 +80,12 @@ private:
 	Vector3 velocity_ = {};
 
 	LRDirection lrDirection_ = LRDirection::kRight;
+
+	// マップチップによるフィールド
+	MapChipField* mapChipField_ = nullptr;
+
+	// 衝突情報を初期化
+	CollisionMapInfo collisionMapInfo;
 
 	// 旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;
@@ -52,4 +104,7 @@ private:
 	static inline const float kGravityAcceleration = 0.98f;
 	static inline const float kLimitFallSpeed = 0.5f;
 	static inline const float kJumpAcceleration = 3.0f;
+	static inline const float kWidth = 0.8f;
+	static inline const float kHeight = 0.8f;
+	static inline const float kBlank = 0.0f;
 };

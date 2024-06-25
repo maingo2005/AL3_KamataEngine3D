@@ -61,7 +61,7 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 
-	Vector3 playerPosition = mapChipField_->MapChipPositionByIndex(30, 0);
+	Vector3 playerPosition = mapChipField_->MapChipPositionByIndex(1, 18);
 
 	// 自キャラの初期化
 	player_->Initialize(model_, &viewProjection_, playerPosition);
@@ -69,7 +69,9 @@ void GameScene::Initialize() {
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 
-	//カメラの生成
+	player_->SetMapChipField(mapChipField_);
+
+	// カメラの生成
 	cameraController_ = new CameraController();
 	// カメラの初期化
 	cameraController_->Initialize();

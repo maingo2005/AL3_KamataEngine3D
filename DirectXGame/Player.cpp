@@ -1,6 +1,9 @@
 #define NOMINMAX
 #include "Player.h"
+#include "MapChipField.h"
 #include "myMath.h"
+
+#include <DebugText.h>
 #include <Input.h>
 #include <algorithm>
 #include <cassert>
@@ -21,6 +24,27 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 }
 
 void Player::Update() {
+	// 移動処理
+	InMovement();
+
+	// 移動量に速度の値をコピー
+	collisionMapInfo.move = velocity_;
+
+	// マップ衝突チェック
+	CollisionDetection(collisionMapInfo);
+
+	// 行列計算
+	worldTransform_.UpdateMatrix();
+	// 行列を定数バッファに転送
+	worldTransform_.TransferMatrix();
+}
+
+void Player::Draw() {
+	// 3Dモデルの描画
+	model_->Draw(worldTransform_, *viewProjection_, textureHandle_);
+}
+
+void Player::InMovement() {
 	// 移動入力
 	if (onGround_) {
 		// 左右移動操作
@@ -81,14 +105,12 @@ void Player::Update() {
 		}
 		if (Input::GetInstance()->PushKey(DIK_UP)) {
 			// ジャンプ初速
-			//			velocity_ += Vector3(0, kJumpAcceleration, 0);
 			velocity_.x += 0;
 			velocity_.y += kJumpAcceleration;
 			velocity_.z += 0;
 		}
 	} else {
 		// 落下速度
-		//		velocity_ += Vector3(0, -kGravityAcceleration, 0);
 		velocity_.x += 0;
 		velocity_.y += -kGravityAcceleration;
 		velocity_.z += 0;
@@ -130,14 +152,84 @@ void Player::Update() {
 			onGround_ = true;
 		}
 	}
-
-	// 行列計算
-	worldTransform_.UpdateMatrix();
-	// 行列を定数バッファに転送
-	worldTransform_.TransferMatrix();
 }
 
-void Player::Draw() {
-	// 3Dモデルの描画
-	model_->Draw(worldTransform_, *viewProjection_, textureHandle_);
+void Player::CollisionDetection(CollisionMapInfo& info) {
+	Top(info);
+	Bottom(info);
+	Right(info);
+	Left(info);
+}
+
+Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
+	Vector3 offsetTable[kNumCorner] = {
+	    {+kWidth / 2.0f, -kHeight / 2.0f, 0}, //  kRightBottom
+	    {-kWidth / 2.0f, -kHeight / 2.0f, 0}, //  kLeftBottom
+	    {+kWidth / 2.0f, +kHeight / 2.0f, 0}, //  kRightTop
+	    {-kWidth / 2.0f, +kHeight / 2.0f, 0}  //  kLeftTop
+	};
+	return center + offsetTable[static_cast<uint32_t>(corner)];
+}
+
+void Player::Top(CollisionMapInfo& info) {
+	// 移動後の4つの角の座標
+	std::array<Vector3, kNumCorner> positionsNew;
+	// 上昇あり？
+	if (info.move.y <= 0) {
+		return;
+	}
+	// 移動後の4つの角の座標の計算
+	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+		positionsNew[i] = CornerPosition(operator+=(worldTransform_.translation_, info.move), static_cast<Corner>(i));
+	}
+
+	MapChipType mapChipType{};
+	// 真上の当たり判定を行う
+	bool hit = false;
+
+	// 左上点の判定
+	MapChipField::IndexSet indexSet;
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+
+	// 右上点の判定
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+
+	// ブロックにヒット？
+	if (hit) {
+		// めり込みを排除する方向に移動量を設定する
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(operator+=(worldTransform_.translation_, Vector3(0, +kHeight / 2.0f, 0)));
+		// めり込み先ブロックの範囲短形
+		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+		info.move.y = std::max(0.0f, rect.bottom - worldTransform_.translation_.y - (kHeight / 20.0f + kBlank));
+		// 天井に当ったことを記録する
+		info.ceiling = true;
+	}
+}
+
+//void Player::Bottom(CollisionMapInfo& info) {}
+//
+//void Player::Right(CollisionMapInfo& info) {}
+//
+//void Player::Left(CollisionMapInfo& info) {}
+
+// 判断結果を反映して移動させる
+void Player::ReflectionMovement(const CollisionMapInfo& info) {
+	// 移動
+	worldTransform_.translation_ += info.move;
+}
+// 天井に接触している場合の処理
+void Player::CeilingContact(const CollisionMapInfo& info) {
+	// 天井に当った？
+	if (collisionMapInfo.ceiling) {
+		DebugText::GetInstance()->ConsolePrintf("hit ceiling\n");
+		velocity_.y = 0;
+	}
 }
