@@ -84,9 +84,6 @@ private:
 	// マップチップによるフィールド
 	MapChipField* mapChipField_ = nullptr;
 
-	// 衝突情報を初期化
-	CollisionMapInfo collisionMapInfo;
-
 	// 旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;
 	// 旋回タイマー

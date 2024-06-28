@@ -27,11 +27,23 @@ void Player::Update() {
 	// 移動処理
 	InMovement();
 
+	// 衝突情報を初期化
+	CollisionMapInfo collisionMapInfo;
+
 	// 移動量に速度の値をコピー
 	collisionMapInfo.move = velocity_;
 
 	// マップ衝突チェック
 	CollisionDetection(collisionMapInfo);
+
+	/*CollisionDetection(CollisionMapInfo & info) {
+		Top(info);
+		Bottom(info);
+		Right(info);
+		Left(info);
+	}*/
+
+	worldTransform_.translation_ += collisionMapInfo.move;
 
 	// 行列計算
 	worldTransform_.UpdateMatrix();
@@ -154,13 +166,6 @@ void Player::InMovement() {
 	}
 }
 
-void Player::CollisionDetection(CollisionMapInfo& info) {
-	Top(info);
-	Bottom(info);
-	Right(info);
-	Left(info);
-}
-
 Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 	Vector3 offsetTable[kNumCorner] = {
 	    {+kWidth / 2.0f, -kHeight / 2.0f, 0}, //  kRightBottom
@@ -171,6 +176,7 @@ Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 	return center + offsetTable[static_cast<uint32_t>(corner)];
 }
 
+//マップ衝突判定上方向
 void Player::Top(CollisionMapInfo& info) {
 	// 移動後の4つの角の座標
 	std::array<Vector3, kNumCorner> positionsNew;
@@ -214,10 +220,13 @@ void Player::Top(CollisionMapInfo& info) {
 	}
 }
 
+//マップ衝突判定下方向
 //void Player::Bottom(CollisionMapInfo& info) {}
-//
+
+//マップ衝突判定右方向
 //void Player::Right(CollisionMapInfo& info) {}
-//
+
+//マップ衝突判定左方向
 //void Player::Left(CollisionMapInfo& info) {}
 
 // 判断結果を反映して移動させる
