@@ -49,6 +49,8 @@ public:
 
 	void InMovement();
 
+	void TurningControl();
+
 	void CollisionDetection(CollisionMapInfo& info);
 
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
@@ -64,8 +66,6 @@ public:
 
 	// 判断結果を反映して移動させる
 	void ReflectionMovement(const CollisionMapInfo& info);
-	// 天井に接触している場合の処理
-	void CeilingContact(const CollisionMapInfo& info);
 
 private:
 	// ワールドトランスフォームの初期化
