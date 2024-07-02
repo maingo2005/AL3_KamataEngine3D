@@ -49,6 +49,8 @@ public:
 
 	void InMovement();
 
+	void TurningControl();
+
 	void CollisionDetection(CollisionMapInfo& info);
 
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
@@ -64,8 +66,8 @@ public:
 
 	// 判断結果を反映して移動させる
 	void ReflectionMovement(const CollisionMapInfo& info);
-	// 天井に接触している場合の処理
-	void CeilingContact(const CollisionMapInfo& info);
+	// 接地状態の切り替え処理
+	void GroundingStateSwitching(const CollisionMapInfo& info);
 
 private:
 	// ワールドトランスフォームの初期化
@@ -104,4 +106,6 @@ private:
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
 	static inline const float kBlank = 0.0f;
+	static inline const float kAttenuationLanding = 0.5f;
+	static inline const float kAttenuationWall = 0.5f;
 };
