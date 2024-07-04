@@ -23,7 +23,7 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 	viewProjection_ = viewProjection;
 }
 
-//マップ衝突判定上方向
+// マップ衝突判定上方向
 void Player::Top(CollisionMapInfo& info) {
 	// 移動後の4つの角の座標
 	std::array<Vector3, kNumCorner> positionsNew;
@@ -67,13 +67,13 @@ void Player::Top(CollisionMapInfo& info) {
 	}
 }
 
-//マップ衝突判定下方向
+// マップ衝突判定下方向
 void Player::Bottom(CollisionMapInfo& info) { info.ceiling = true; }
 
- //マップ衝突判定右方向
+// マップ衝突判定右方向
 void Player::Right(CollisionMapInfo& info) { info.ceiling = true; }
 
- //マップ衝突判定左方向
+// マップ衝突判定左方向
 void Player::Left(CollisionMapInfo& info) { info.ceiling = true; }
 
 void Player::InMovement() {
@@ -128,13 +128,13 @@ void Player::InMovement() {
 		if (Input::GetInstance()->PushKey(DIK_UP)) {
 			// ジャンプ初速
 			velocity_.x += 0;
-			velocity_.y += kJumpAcceleration;
+			velocity_.y += (kJumpAcceleration / 60.0f);
 			velocity_.z += 0;
 		}
 	} else {
 		// 落下速度
 		velocity_.x += 0;
-		velocity_.y += -kGravityAcceleration;
+		velocity_.y += -(kGravityAcceleration / 60.0f);
 		velocity_.z += 0;
 		// 落下速度制限
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
@@ -237,7 +237,7 @@ void Player::Update() {
 		velocity_.y = 0;
 	}
 
-	//旋回制御
+	// 旋回制御
 	TurningControl();
 
 	// 行列計算
