@@ -121,13 +121,13 @@ void Player::InMovement() {
 		if (Input::GetInstance()->PushKey(DIK_UP)) {
 			// ジャンプ初速
 			velocity_.x += 0;
-			velocity_.y += kJumpAcceleration;
+			velocity_.y += (kJumpAcceleration / 60.0f);
 			velocity_.z += 0;
 		}
 	} else {
 		// 落下速度
 		velocity_.x += 0;
-		velocity_.y += -kGravityAcceleration;
+		velocity_.y += -(kGravityAcceleration / 60.0f);
 		velocity_.z += 0;
 		// 落下速度制限
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
@@ -170,7 +170,7 @@ void Player::InMovement() {
 	}
 }
 
-//旋回制御
+// 旋回制御
 void Player::TurningControl() {
 	// 旋回制御
 	if (turnTimer_ > 0.0f) {

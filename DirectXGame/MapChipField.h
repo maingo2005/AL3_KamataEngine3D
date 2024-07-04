@@ -43,11 +43,9 @@ public:
 
 	void LoadMapChipCsv(const std::string& filePath);
 
-	MapChipType MapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
+	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
 
-	Vector3 MapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
-
-	Vector3 GetmapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
+	Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
 
 	uint32_t GetkNumkBlockVirtical();
 	uint32_t GetkNumkBlockHorizontal();
@@ -55,8 +53,6 @@ public:
 	IndexSet GetMapChipIndexSetByPosition(const Vector3& position);
 
 	Rect GetRectByIndex(uint32_t xIndex, uint32_t yIndex);
-
-	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
 
 private:
 	static inline const float kBlockWidth = 1.0f;

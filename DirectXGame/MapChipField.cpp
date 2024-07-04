@@ -65,7 +65,7 @@ void MapChipField::LoadMapChipCsv(const std::string& filePath) {
 	}
 }
 
-MapChipType MapChipField::MapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex) {
+MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex) {
 	if (xIndex < 0 || kNumkBlockHorizontal - 1 < xIndex) {
 		return MapChipType::kBlank;
 	}
@@ -75,7 +75,7 @@ MapChipType MapChipField::MapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex) {
 	return mapChipData_.data[yIndex][xIndex];
 }
 
-Vector3 MapChipField::MapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) { return Vector3(kBlockWidth * xIndex, kBlockHeight * (kNumkBlockVirtical - 1 - yIndex), 0); }
+Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) { return Vector3(kBlockWidth * xIndex, kBlockHeight * (kNumkBlockVirtical - 1 - yIndex), 0); }
 
 uint32_t MapChipField::GetkNumkBlockVirtical() { return kNumkBlockVirtical; }
 
@@ -84,15 +84,13 @@ uint32_t MapChipField::GetkNumkBlockHorizontal() { return kNumkBlockHorizontal; 
 MapChipField::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
 	MapChipField::IndexSet indexSet = {};
 	indexSet.xIndex = static_cast<uint32_t>((position.x + kBlockWidth / 2) / kBlockWidth);
-	indexSet.yIndex = (kNumkBlockVirtical - 1 - static_cast<uint32_t>(position.y + kBlockHeight / 2) / kBlockHeight);
+	indexSet.yIndex = kNumkBlockVirtical - 1 - static_cast<uint32_t>((position.y + kBlockHeight / 2) / kBlockHeight);
 
 	return indexSet;
 }
 
-Vector3 MapChipField::GetmapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) { return Vector3(xIndex, yIndex); }
-
 MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex) {
-	Vector3 center = GetmapChipPositionByIndex(xIndex, yIndex);
+	Vector3 center = GetMapChipPositionByIndex(xIndex, yIndex);
 
 	Rect rect;
 	rect.left = center.x - kBlockWidth / 2.0f;
@@ -102,5 +100,3 @@ MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex
 
 	return rect;
 }
-
-MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex) { return MapChipType(xIndex - yIndex); }
