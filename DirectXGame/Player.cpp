@@ -1,13 +1,13 @@
 #define NOMINMAX
-#include "Player.h"
-#include "MapChipField.h"
-#include "myMath.h"
 
 #include <DebugText.h>
 #include <Input.h>
 #include <algorithm>
 #include <cassert>
 #include <numbers>
+#include "myMath.h"
+#include "Player.h"
+#include "MapChipField.h"
 
 void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
 	// NULLポインタチェック
@@ -23,46 +23,6 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 	viewProjection_ = viewProjection;
 }
 
-void Player::Update() {
-	// 移動処理
-	InMovement();
-
-	// 衝突情報を初期化
-	CollisionMapInfo collisionMapInfo = {};
-	// 移動量に速度の値をコピー
-	collisionMapInfo.move = velocity_;
-
-	collisionMapInfo.landing = false;
-	collisionMapInfo.hitWall = false;
-
-	// マップ衝突チェック
-	CollisionDetection(collisionMapInfo);
-
-	// 移動
-	worldTransform_.translation_ += collisionMapInfo.move;
-
-	// 天井に当った？
-	if (collisionMapInfo.ceiling) {
-		DebugText::GetInstance()->ConsolePrintf("hit ceiling\n");
-		velocity_.y = 0;
-	}
-
-	// 壁接触による減速
-	if (collisionMapInfo.hitWall) {
-		velocity_.x *= (1.0f - kAttenuationWall);
-	}
-
-	// 接地判定
-	GroundingStateSwitching(collisionMapInfo);
-
-	// 旋回制御
-	TurningControl();
-
-	// 行列計算
-	worldTransform_.UpdateMatrix();
-	// 行列を定数バッファに転送
-	worldTransform_.TransferMatrix();
-}
 
 void Player::Draw() {
 	// 3Dモデルの描画
@@ -449,4 +409,45 @@ void Player::GroundingStateSwitching(const CollisionMapInfo& info) {
 			velocity_.y = 0.0f;
 		}
 	}
+}
+
+void Player::Update() {
+	// 移動処理
+	InMovement();
+
+	// 衝突情報を初期化
+	CollisionMapInfo collisionMapInfo = {};
+	// 移動量に速度の値をコピー
+	collisionMapInfo.move = velocity_;
+
+	collisionMapInfo.landing = false;
+	collisionMapInfo.hitWall = false;
+
+	// マップ衝突チェック
+	CollisionDetection(collisionMapInfo);
+
+	// 移動
+	worldTransform_.translation_ += collisionMapInfo.move;
+
+	// 天井に当った？
+	if (collisionMapInfo.ceiling) {
+		DebugText::GetInstance()->ConsolePrintf("hit ceiling\n");
+		velocity_.y = 0;
+	}
+
+	// 壁接触による減速
+	if (collisionMapInfo.hitWall) {
+		velocity_.x *= (1.0f - kAttenuationWall);
+	}
+
+	// 接地判定
+	GroundingStateSwitching(collisionMapInfo);
+
+	// 旋回制御
+	TurningControl();
+
+	// 行列計算
+	worldTransform_.UpdateMatrix();
+	// 行列を定数バッファに転送
+	worldTransform_.TransferMatrix();
 }

@@ -7,8 +7,8 @@
 #include "Vector3.h"
 
 enum class MapChipType {
-	kBlank,
-	kBlock,
+	kBlank, //空白
+	kBlock, //ブロック
 };
 
 struct MapChipData {

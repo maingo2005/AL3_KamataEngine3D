@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "TextureManager.h"
 #include "myMath.h"
+
 #include <cassert>
 
 GameScene::GameScene() {}
@@ -101,7 +102,7 @@ void GameScene::GenerateBlocks() {
 
 	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
-			if (j % 2 == (i % 2)) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
 				worldTransformBlocks_[i][j] = new WorldTransform();
 				worldTransformBlocks_[i][j]->Initialize();
 				worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
@@ -123,6 +124,9 @@ void GameScene::Update() {
 	}
 #endif
 
+	// カメラの更新
+	cameraController_->Update();
+
 	// カメラ処理
 	if (isDebugCameraActive_) {
 		// デバッグカメラの更新
@@ -134,10 +138,15 @@ void GameScene::Update() {
 	} else {
 		// ビュープロジェクション行列の更新と転送
 		viewProjection_.UpdateMatrix();
+		// ビュープロジェクションの転送
+		viewProjection_.TransferMatrix();
 	}
 
 	// 自キャラの更新
 	player_->Update();
+
+	// 天球の更新
+	skydome_->Update();
 
 	// 縦横ブロック更新
 	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
@@ -147,16 +156,14 @@ void GameScene::Update() {
 
 			// アフィン変換行列の作成
 			worldTransformBlockYoko->UpdateMatrix();
+			worldTransformBlockYoko->matWorld_ = MakeAffineMatrix(worldTransformBlockYoko->scale_, worldTransformBlockYoko->rotation_, worldTransformBlockYoko->translation_);
+
+			// 定数バッファに転送
+			worldTransformBlockYoko->TransferMatrix();
 		}
 	}
 
-	// 天球の更新
-	skydome_->Update();
-
 	mapChipField_->Update();
-
-	// カメラの更新
-	cameraController_->Update();
 }
 
 void GameScene::Draw() {
@@ -190,7 +197,7 @@ void GameScene::Draw() {
 
 	skydome_->Draw();
 
-	mapChipField_->Draw();
+	// mapChipField_->Draw();
 
 	// 縦横ブロック描画
 	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {

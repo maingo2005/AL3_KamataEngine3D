@@ -3,13 +3,14 @@
 
 class MapChipField;
 
-enum class LRDirection {
-	kRight,
-	kLeft,
-};
 
 class Player {
 public:
+	enum class LRDirection {
+		kRight,
+		kLeft,
+	};
+
 	// マップチップとの当たり判定情報
 	struct CollisionMapInfo {
 		// 天井衝突フラグ
@@ -97,13 +98,13 @@ private:
 	bool landing = false;
 
 	static inline const float kAcceleratio = 1.0f;
-	static inline const float kAttenuation = 0.5f;
+	static inline const float kAttenuation = 0.05f;
 	static inline const float kJumpAcceleration = 20.0f;
 	static inline const float kGravityAcceleration = 0.98f;
 	static inline const float kAttenuationWall = 0.2f;
 	static inline const float kAttenuationLanding = 0.0f;
-	static inline const float kLimitFallSpeed = 100.0f;
-	static inline const float kLimitRunSpeed = 0.1f;
+	static inline const float kLimitFallSpeed = 0.5f;
+	static inline const float kLimitRunSpeed = 0.5f;
 	static inline const float kTimeTurn = 0.3f;
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
