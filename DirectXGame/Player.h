@@ -1,14 +1,24 @@
 #include "Model.h"
+#include "ViewProjection.h"
 #include "WorldTransform.h"
 
 class MapChipField;
-
 
 class Player {
 public:
 	enum class LRDirection {
 		kRight,
 		kLeft,
+	};
+
+	// 角
+	enum Corner {
+		kRightBottom, // 右下
+		kLeftBottom,  // 左下
+		kRightTop,    // 右上
+		kLeftTop,     // 左上
+
+		kNumCorner // 要素数
 	};
 
 	// マップチップとの当たり判定情報
@@ -21,16 +31,6 @@ public:
 		bool hitWall = false;
 		// 移動量
 		Vector3 move;
-	};
-
-	// 角
-	enum Corner {
-		kRightBottom, // 右下
-		kLeftBottom,  // 左下
-		kRightTop,    // 右上
-		kLeftTop,     // 左上
-
-		kNumCorner // 要素数
 	};
 
 	/// 初期化
@@ -54,8 +54,6 @@ public:
 
 	void CollisionDetection(CollisionMapInfo& info);
 
-	Vector3 CornerPosition(const Vector3& center, Corner corner);
-
 	// 上
 	void Top(CollisionMapInfo& info);
 	// 下
@@ -65,8 +63,6 @@ public:
 	// 左
 	void Left(CollisionMapInfo& info);
 
-	// 判断結果を反映して移動させる
-	void ReflectionMovement(const CollisionMapInfo& info);
 	// 接地状態の切り替え処理
 	void GroundingStateSwitching(const CollisionMapInfo& info);
 
@@ -90,7 +86,7 @@ private:
 	// 旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;
 	// 旋回タイマー
-	float turnTimer_ = 0.7f;
+	float turnTimer_ = 0.0f;
 
 	// 接地状態のフラグ
 	bool onGround_ = true;
@@ -109,4 +105,7 @@ private:
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
 	static inline const float kBlank = 0.4f;
+	static inline const float kGroundSearchHeight = 0.06f;
+
+	Vector3 CornerPosition(const Vector3& center, Corner corner);
 };

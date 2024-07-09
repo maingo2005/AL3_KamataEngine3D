@@ -7,9 +7,9 @@
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
-	// モデルの開放
-	delete model_;
-	// ブロックの開放
+	// モデルプレイヤーの開放
+	delete modelPlayer_;
+	// モデルブロックの開放
 	delete modelBlock_;
 	// 天球の開放
 	delete modelSkydome_;
@@ -37,40 +37,41 @@ void GameScene::Initialize() {
 
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mario.jpg");
+
 	// 3Dモデルの生成
-	model_ = Model::Create();
+	modelPlayer_ = Model::CreateFromOBJ("player");
 	modelBlock_ = Model::CreateFromOBJ("block");
 	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
+
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
+
 	// ビュープロジェクションの初期化
 	viewProjection_.farZ;
 	viewProjection_.Initialize();
-
-	// 天球の生成
-	skydome_ = new Skydome();
-	// 天球の初期化
-	skydome_->Initialize(modelSkydome_, &viewProjection_);
 
 	// マップチップの描画の生成
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	// マップチップの描画の初期化
 	mapChipField_->Initialize(modelBlock_, &viewProjection_);
-	GenerateBlocks();
 
 	// 自キャラの生成
 	player_ = new Player();
-
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
-
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(5, 16);
 	// 自キャラの初期化
-	player_->Initialize(model_, &viewProjection_, playerPosition);
+	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition);
+	player_->SetMapChipField(mapChipField_);
 
 	// デバッグカメラの生成
-	debugCamera_ = new DebugCamera(1280, 720);
+	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
 
-	player_->SetMapChipField(mapChipField_);
+	// 天球の生成
+	skydome_ = new Skydome();
+	// 天球の初期化
+	skydome_->Initialize(modelSkydome_, &viewProjection_);
+
+	GenerateBlocks();
 
 	// カメラの生成
 	cameraController_ = new CameraController();
@@ -85,47 +86,23 @@ void GameScene::Initialize() {
 	cameraController_->SetMovableArea(cameraArea);
 }
 
-void GameScene::GenerateBlocks() {
-	// 要素数
-	const uint32_t numBlockVirtical = mapChipField_->GetkNumkBlockVirtical();
-	const uint32_t numBlockHorizontal = mapChipField_->GetkNumkBlockHorizontal();
-	// ブロック1個分の横幅
-	const float kBlockWidth = 2.0f;
-	const float kBlockHeight = 2.0f;
-	// 要素数を変更する
-	worldTransformBlocks_.resize(numBlockVirtical);
-
-	// キューブの生成
-	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
-		worldTransformBlocks_[i].resize(numBlockHorizontal);
-	}
-
-	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
-			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-				worldTransformBlocks_[i][j] = new WorldTransform();
-				worldTransformBlocks_[i][j]->Initialize();
-				worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
-				worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
-			} else {
-				worldTransformBlocks_[i][j] = nullptr;
-			}
-		}
-	}
-}
-
 void GameScene::Update() {
-#ifdef _DEBUG
-	if (input_->TriggerKey(DIK_SPACE)) {
-		if (isDebugCameraActive_ == true)
-			isDebugCameraActive_ = false;
-		else
-			isDebugCameraActive_ = true;
-	}
-#endif
+
+	// 自キャラの更新
+	player_->Update();
 
 	// カメラの更新
 	cameraController_->Update();
+
+#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_0)) {
+		isDebugCameraActive_ = !isDebugCameraActive_;
+		//if (isDebugCameraActive_ == true)
+		//	isDebugCameraActive_ = false;
+		//else
+		//	isDebugCameraActive_ = true;
+	}
+#endif
 
 	// カメラ処理
 	if (isDebugCameraActive_) {
@@ -141,9 +118,6 @@ void GameScene::Update() {
 		// ビュープロジェクションの転送
 		viewProjection_.TransferMatrix();
 	}
-
-	// 自キャラの更新
-	player_->Update();
 
 	// 天球の更新
 	skydome_->Update();
@@ -193,8 +167,6 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	player_->Draw();
-
 	skydome_->Draw();
 
 	// mapChipField_->Draw();
@@ -208,6 +180,8 @@ void GameScene::Draw() {
 			modelBlock_->Draw(*worldTransformBlockYoko, viewProjection_);
 		}
 	}
+
+	player_->Draw();
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
@@ -225,4 +199,33 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::GenerateBlocks() {
+	// 要素数
+	const uint32_t numBlockVirtical = mapChipField_->GetkNumkBlockVirtical();
+	const uint32_t numBlockHorizontal = mapChipField_->GetkNumkBlockHorizontal();
+	// ブロック1個分の横幅
+	const float kBlockWidth = 2.0f;
+	const float kBlockHeight = 2.0f;
+	// 要素数を変更する
+	worldTransformBlocks_.resize(numBlockVirtical);
+
+	// キューブの生成
+	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+		worldTransformBlocks_[i].resize(numBlockHorizontal);
+	}
+
+	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+				worldTransformBlocks_[i][j] = new WorldTransform();
+				worldTransformBlocks_[i][j]->Initialize();
+				worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
+				worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
+			} else {
+				worldTransformBlocks_[i][j] = nullptr;
+			}
+		}
+	}
 }
