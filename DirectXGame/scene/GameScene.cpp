@@ -53,8 +53,6 @@ void GameScene::Initialize() {
 	// マップチップの描画の生成
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
-	// マップチップの描画の初期化
-	mapChipField_->Initialize(modelBlock_, &viewProjection_);
 
 	// 自キャラの生成
 	player_ = new Player();
@@ -97,10 +95,6 @@ void GameScene::Update() {
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_0)) {
 		isDebugCameraActive_ = !isDebugCameraActive_;
-		//if (isDebugCameraActive_ == true)
-		//	isDebugCameraActive_ = false;
-		//else
-		//	isDebugCameraActive_ = true;
 	}
 #endif
 
@@ -116,7 +110,7 @@ void GameScene::Update() {
 		// ビュープロジェクション行列の更新と転送
 		viewProjection_.UpdateMatrix();
 		// ビュープロジェクションの転送
-		viewProjection_.TransferMatrix();
+		//viewProjection_.TransferMatrix();
 	}
 
 	// 天球の更新
@@ -136,8 +130,6 @@ void GameScene::Update() {
 			worldTransformBlockYoko->TransferMatrix();
 		}
 	}
-
-	mapChipField_->Update();
 }
 
 void GameScene::Draw() {
@@ -206,8 +198,8 @@ void GameScene::GenerateBlocks() {
 	const uint32_t numBlockVirtical = mapChipField_->GetkNumkBlockVirtical();
 	const uint32_t numBlockHorizontal = mapChipField_->GetkNumkBlockHorizontal();
 	// ブロック1個分の横幅
-	const float kBlockWidth = 2.0f;
-	const float kBlockHeight = 2.0f;
+	const float kBlockWidth = 1.0f;
+	const float kBlockHeight = 1.0f;
 	// 要素数を変更する
 	worldTransformBlocks_.resize(numBlockVirtical);
 
@@ -221,6 +213,7 @@ void GameScene::GenerateBlocks() {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
 				worldTransformBlocks_[i][j] = new WorldTransform();
 				worldTransformBlocks_[i][j]->Initialize();
+				//worldTransformBlocks_[i][j] = static_cast<WorldTransform*>(worldTransform_);
 				worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
 				worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
 			} else {

@@ -21,18 +21,6 @@ public:
 		kNumCorner // 要素数
 	};
 
-	// マップチップとの当たり判定情報
-	struct CollisionMapInfo {
-		// 天井衝突フラグ
-		bool ceiling = false;
-		// 着地フラグ
-		bool landing = false;
-		// 壁接触フラグ
-		bool hitWall = false;
-		// 移動量
-		Vector3 move;
-	};
-
 	/// 初期化
 	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
 
@@ -48,50 +36,30 @@ public:
 
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
 
-	void InMovement();
-
-	void TurningControl();
-
-	void CollisionDetection(CollisionMapInfo& info);
-
-	// 上
-	void Top(CollisionMapInfo& info);
-	// 下
-	void Bottom(CollisionMapInfo& info);
-	// 右
-	void Right(CollisionMapInfo& info);
-	// 左
-	void Left(CollisionMapInfo& info);
-
-	// 接地状態の切り替え処理
-	void GroundingStateSwitching(const CollisionMapInfo& info);
-
 private:
-	// ワールドトランスフォームの初期化
-	WorldTransform worldTransform_;
-	// モデル
 	Model* model_ = nullptr;
-	// テクスチャハンドル
-	uint32_t textureHandle_ = 0u;
-
+	WorldTransform worldTransform_;
 	ViewProjection* viewProjection_ = nullptr;
-
 	Vector3 velocity_ = {};
-
+	bool onGround_ = true;
 	LRDirection lrDirection_ = LRDirection::kRight;
-
-	// マップチップによるフィールド
+	float turnFirstRotationY_ = 0.0f;
+	float turnTimer_ = 0.0f;
 	MapChipField* mapChipField_ = nullptr;
 
-	// 旋回開始時の角度
-	float turnFirstRotationY_ = 0.0f;
-	// 旋回タイマー
-	float turnTimer_ = 0.0f;
-
-	// 接地状態のフラグ
-	bool onGround_ = true;
-
 	bool landing = false;
+
+	// マップチップとの当たり判定情報
+	struct CollisionMapInfo {
+		// 天井衝突フラグ
+		bool ceiling = false;
+		// 着地フラグ
+		bool landing = false;
+		// 壁接触フラグ
+		bool hitWall = false;
+		// 移動量
+		Vector3 move;
+	};
 
 	static inline const float kAcceleratio = 1.0f;
 	static inline const float kAttenuation = 0.05f;
@@ -106,6 +74,23 @@ private:
 	static inline const float kHeight = 0.8f;
 	static inline const float kBlank = 0.4f;
 	static inline const float kGroundSearchHeight = 0.06f;
+
+	//移動処理
+	void InMovement();
+	//旋回制御
+	void TurningControl();
+	//マップ衝突チェック
+	void CollisionDetection(CollisionMapInfo& info);
+	// 上
+	void Top(CollisionMapInfo& info);
+	// 下
+	void Bottom(CollisionMapInfo& info);
+	// 右
+	void Right(CollisionMapInfo& info);
+	// 左
+	void Left(CollisionMapInfo& info);
+	// 接地状態の切り替え処理
+	void GroundingStateSwitching(const CollisionMapInfo& info);
 
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
 };
