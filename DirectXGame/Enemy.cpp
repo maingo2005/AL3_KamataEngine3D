@@ -31,3 +31,26 @@ void Enemy::Draw() {
 	// モデルの描画
 	model_->Draw(worldTransform_, *viewProjection_);
 }
+
+Vector3 Enemy::GetWorldPosition() {
+	Vector3 wordPos;
+	// ワールド行列の平行移動成分を取得（ワールド座標）
+	wordPos.x = worldTransform_.matWorld_.m[3][0];
+	wordPos.y = worldTransform_.matWorld_.m[3][1];
+	wordPos.z = worldTransform_.matWorld_.m[3][2];
+	return wordPos;
+}
+
+AABB Enemy::GetAABB() {
+	Vector3 wprldPos = GetWorldPosition();
+	AABB aabb;
+
+	aabb.min = {wprldPos.x - kWidth / 2.0f, wprldPos.y - kHeight / 2.0f, wprldPos.z - kWidth / 2.0f};
+	aabb.max = {wprldPos.x + kWidth / 2.0f, wprldPos.y + kHeight / 2.0f, wprldPos.z + kWidth / 2.0f};
+
+	return aabb;
+}
+
+void Enemy::OnCollision(const Player* player) {
+	(void)player;
+}

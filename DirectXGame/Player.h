@@ -3,8 +3,10 @@
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "AABB.h"
 
 class MapChipField;
+class Enemy;
 
 class Player {
 public:
@@ -31,6 +33,13 @@ public:
 
 	/// 描画
 	void Draw();
+
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+
+	AABB GetAABB();
+
+	void OnCollision(const Enemy* enemy);
 
 	const WorldTransform& GetWorldTransform() const { return worldTransform_; }
 

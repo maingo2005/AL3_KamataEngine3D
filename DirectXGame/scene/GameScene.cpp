@@ -13,14 +13,16 @@ GameScene::~GameScene() {
 	delete modelBlock_;
 	// 天球の開放
 	delete modelSkydome_;
-	//モデルエネミーの開放
+	// モデルエネミーの開放
 	delete modelEnemy_;
 	// マップチップの開放
 	delete mapChipField_;
 	// 自キャラの開放
 	delete player_;
-	//敵キャラの開放
-	delete enemy_;
+
+	for (Enemy* enemy : enemies_) {
+		delete enemy;
+	}
 
 	delete cameraController_;
 
@@ -90,9 +92,13 @@ void GameScene::Initialize() {
 	CameraController::Rect cameraArea = {12.0f, 100 - 12.0f, 6.0f, 6.0f};
 	cameraController_->SetMovableArea(cameraArea);
 
-	enemy_ = new Enemy();
-	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(5, 18);
-	enemy_->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
+	// 敵キャラの生成
+	Enemy* newEnemy = new Enemy();
+	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(14, 18);
+	// 敵キャラの初期化
+	newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
+
+	enemies_.push_back(newEnemy);
 }
 
 void GameScene::Update() {
@@ -100,14 +106,16 @@ void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
 
-	//敵キャラの更新
-	enemy_->Update();
+	// 敵キャラの更新
+	for (Enemy* enemy : enemies_) {
+		enemy->Update();
+	}
 
 	// カメラの更新
 	cameraController_->Update();
 
 #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_0)) {
+	if (input_->TriggerKey(DIK_1)) {
 		isDebugCameraActive_ = !isDebugCameraActive_;
 	}
 #endif
@@ -123,10 +131,8 @@ void GameScene::Update() {
 	} else {
 		viewProjection_.matView = cameraController_->GetViewProjection().matView;
 		viewProjection_.matView = cameraController_->GetViewProjection().matProjection;
-		// ビュープロジェクション行列の更新と転送
-		//viewProjection_.UpdateMatrix();
 		// ビュープロジェクションの転送
-		 viewProjection_.TransferMatrix();
+		viewProjection_.TransferMatrix();
 	}
 
 	// 天球の更新
@@ -191,7 +197,9 @@ void GameScene::Draw() {
 
 	player_->Draw();
 
-	enemy_->Draw();
+	for (Enemy* enemy : enemies_) {
+		enemy->Draw();
+	}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
@@ -235,4 +243,29 @@ void GameScene::GenerateBlocks() {
 			}*/
 		}
 	}
+}
+
+void GameScene::CheckAllCollisions() {
+	//判断対象1と2の座標
+	AABB aabb1, aabb2;
+
+	#pragma region 自キャラと敵キャラの当たり判定
+	{
+		// 自キャラの座標
+		aabb1 = player_->GetAABB();
+		//自キャラと敵弾すべての当たり判定
+		for (Enemy* enemy : enemies_) {
+			//敵弾の座標
+			aabb2 = enemy->GetAABB();
+
+			//AABB同士の交差判定
+			if (IsCollision(aabb1, aabb2)) {
+				//自キャラの衝突時コールバックを呼び出す
+				player_->OnCollision(enemy);
+				//敵弾の衝突時コールバックを呼び出す
+				enemy->OnCollision(player_);
+			}
+		}
+	}
+	#pragma endregion
 }
