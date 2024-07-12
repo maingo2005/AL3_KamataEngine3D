@@ -18,6 +18,8 @@ GameScene::~GameScene() {
 	// 自キャラの開放
 	delete player_;
 
+	delete cameraController_;
+
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -107,10 +109,12 @@ void GameScene::Update() {
 		// ビュープロジェクション行列の転送
 		viewProjection_.TransferMatrix();
 	} else {
+		viewProjection_.matView = cameraController_->GetViewProjection().matView;
+		viewProjection_.matView = cameraController_->GetViewProjection().matProjection;
 		// ビュープロジェクション行列の更新と転送
-		viewProjection_.UpdateMatrix();
+		//viewProjection_.UpdateMatrix();
 		// ビュープロジェクションの転送
-		//viewProjection_.TransferMatrix();
+		 viewProjection_.TransferMatrix();
 	}
 
 	// 天球の更新
@@ -197,9 +201,6 @@ void GameScene::GenerateBlocks() {
 	// 要素数
 	const uint32_t numBlockVirtical = mapChipField_->GetkNumkBlockVirtical();
 	const uint32_t numBlockHorizontal = mapChipField_->GetkNumkBlockHorizontal();
-	// ブロック1個分の横幅
-	const float kBlockWidth = 1.0f;
-	const float kBlockHeight = 1.0f;
 	// 要素数を変更する
 	worldTransformBlocks_.resize(numBlockVirtical);
 
@@ -211,14 +212,13 @@ void GameScene::GenerateBlocks() {
 	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-				worldTransformBlocks_[i][j] = new WorldTransform();
+				WorldTransform* worldTransform = new WorldTransform();
+				worldTransformBlocks_[i][j] = worldTransform;
 				worldTransformBlocks_[i][j]->Initialize();
-				//worldTransformBlocks_[i][j] = static_cast<WorldTransform*>(worldTransform_);
-				worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
-				worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
-			} else {
-				worldTransformBlocks_[i][j] = nullptr;
-			}
+				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+			} /*else {
+			    worldTransformBlocks_[i][j] = nullptr;
+			}*/
 		}
 	}
 }

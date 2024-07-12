@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
@@ -61,7 +63,7 @@ private:
 		Vector3 move;
 	};
 
-	static inline const float kAcceleratio = 1.0f;
+	static inline const float kAcceleratio = 0.1f;
 	static inline const float kAttenuation = 0.05f;
 	static inline const float kJumpAcceleration = 20.0f;
 	static inline const float kGravityAcceleration = 0.98f;
