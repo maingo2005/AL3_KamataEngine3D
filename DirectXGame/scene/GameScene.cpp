@@ -13,10 +13,14 @@ GameScene::~GameScene() {
 	delete modelBlock_;
 	// 天球の開放
 	delete modelSkydome_;
+	//モデルエネミーの開放
+	delete modelEnemy_;
 	// マップチップの開放
 	delete mapChipField_;
 	// 自キャラの開放
 	delete player_;
+	//敵キャラの開放
+	delete enemy_;
 
 	delete cameraController_;
 
@@ -44,6 +48,7 @@ void GameScene::Initialize() {
 	modelPlayer_ = Model::CreateFromOBJ("player");
 	modelBlock_ = Model::CreateFromOBJ("block");
 	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
+	modelEnemy_ = Model::CreateFromOBJ("enemy");
 
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
@@ -84,12 +89,19 @@ void GameScene::Initialize() {
 
 	CameraController::Rect cameraArea = {12.0f, 100 - 12.0f, 6.0f, 6.0f};
 	cameraController_->SetMovableArea(cameraArea);
+
+	enemy_ = new Enemy();
+	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(5, 18);
+	enemy_->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
 }
 
 void GameScene::Update() {
 
 	// 自キャラの更新
 	player_->Update();
+
+	//敵キャラの更新
+	enemy_->Update();
 
 	// カメラの更新
 	cameraController_->Update();
@@ -178,6 +190,8 @@ void GameScene::Draw() {
 	}
 
 	player_->Draw();
+
+	enemy_->Draw();
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

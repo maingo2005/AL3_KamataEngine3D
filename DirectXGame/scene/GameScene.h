@@ -18,6 +18,8 @@
 
 #include "CameraController.h"
 
+#include "Enemy.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -65,6 +67,7 @@ private: // メンバ変数
 	Model* modelPlayer_ = nullptr;
 	Model* modelBlock_ = nullptr;
 	Model* modelSkydome_ = nullptr;
+	Model* modelEnemy_ = nullptr;
 	// ワールドトランスフォームの初期化
 	WorldTransform worldTransform_;
 	// ビュープロジェクションの初期化
@@ -88,4 +91,6 @@ private: // メンバ変数
 	MapChipField* mapChipField_ = nullptr;
 
 	CameraController* cameraController_ = nullptr;
+
+	Enemy* enemy_ = nullptr;
 };
