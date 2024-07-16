@@ -76,6 +76,9 @@ private: // メンバ変数
 	// 自キャラ
 	Player* player_ = nullptr;
 
+	//敵キャラ
+	Enemy* enemy_ = nullptr;
+
 	// 縦横ブロック配列
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 
@@ -93,6 +96,7 @@ private: // メンバ変数
 	CameraController* cameraController_ = nullptr;
 
 	std::list<Enemy*> enemies_;
+	Enemy* newEnemy = nullptr;
 
 	void CheckAllCollisions();
 };

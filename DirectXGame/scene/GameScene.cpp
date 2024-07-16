@@ -93,7 +93,7 @@ void GameScene::Initialize() {
 	cameraController_->SetMovableArea(cameraArea);
 
 	// 敵キャラの生成
-	Enemy* newEnemy = new Enemy();
+	newEnemy = new Enemy();
 	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(14, 18);
 	// 敵キャラの初期化
 	newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);

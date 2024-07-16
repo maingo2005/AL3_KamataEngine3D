@@ -14,14 +14,9 @@ public:
 		float top = 1.0f;    // 上端
 	};
 
-	/// 初期化
 	void Initialize();
-
-	/// 更新
 	void Update();
-
 	void SetTarget(Player* target) { target_ = target; }
-
 	void Reset();
 
 	ViewProjection& GetViewProjection() { return viewProjection_; }

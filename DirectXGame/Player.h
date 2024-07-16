@@ -1,9 +1,9 @@
 #pragma once
 
+#include "AABB.h"
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include "AABB.h"
 
 class MapChipField;
 class Enemy;
@@ -25,20 +25,13 @@ public:
 		kNumCorner // 要素数
 	};
 
-	/// 初期化
 	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
-
-	/// 更新
 	void Update();
-
-	/// 描画
 	void Draw();
 
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
-
 	AABB GetAABB();
-
 	void OnCollision(const Enemy* enemy);
 
 	const WorldTransform& GetWorldTransform() const { return worldTransform_; }
@@ -48,6 +41,20 @@ public:
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
 
 private:
+	static inline const float kAcceleratio = 0.1f;
+	static inline const float kAttenuation = 0.05f;
+	static inline const float kJumpAcceleration = 20.0f;
+	static inline const float kGravityAcceleration = 0.98f;
+	static inline const float kAttenuationWall = 0.2f;
+	static inline const float kAttenuationLanding = 0.5f;
+	static inline const float kLimitFallSpeed = 0.5f;
+	static inline const float kLimitRunSpeed = 0.5f;
+	static inline const float kTimeTurn = 0.7f;
+	static inline const float kWidth = 0.8f;
+	static inline const float kHeight = 0.8f;
+	static inline const float kBlank = 0.04f;
+	static inline const float kGroundSearchHeight = 0.06f;
+
 	Model* model_ = nullptr;
 	WorldTransform worldTransform_;
 	ViewProjection* viewProjection_ = nullptr;
@@ -71,20 +78,6 @@ private:
 		// 移動量
 		Vector3 move;
 	};
-
-	static inline const float kAcceleratio = 0.1f;
-	static inline const float kAttenuation = 0.05f;
-	static inline const float kJumpAcceleration = 20.0f;
-	static inline const float kGravityAcceleration = 0.98f;
-	static inline const float kAttenuationWall = 0.2f;
-	static inline const float kAttenuationLanding = 0.0f;
-	static inline const float kLimitFallSpeed = 0.5f;
-	static inline const float kLimitRunSpeed = 0.5f;
-	static inline const float kTimeTurn = 0.3f;
-	static inline const float kWidth = 0.8f;
-	static inline const float kHeight = 0.8f;
-	static inline const float kBlank = 0.4f;
-	static inline const float kGroundSearchHeight = 0.06f;
 
 	//移動処理
 	void InMovement();

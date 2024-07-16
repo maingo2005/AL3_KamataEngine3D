@@ -7,6 +7,7 @@ void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vecto
 	// NULLポインタチェック
 	assert(model);
 	model_ = model;
+
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
