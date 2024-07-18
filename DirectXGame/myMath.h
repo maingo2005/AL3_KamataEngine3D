@@ -29,3 +29,5 @@ float Lerp(float x1, float x2, float t);
 Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
 
 bool IsCollision(const AABB& aabb1, const AABB& aabb2);
+
+Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
