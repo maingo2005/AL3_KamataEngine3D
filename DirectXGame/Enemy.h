@@ -9,11 +9,10 @@ class Player;
 
 class Enemy {
 public:
+	
 	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
 	void Update();
 	void Draw();
-
-	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 	AABB GetAABB();
 	void OnCollision(const Player* player);

@@ -5,22 +5,19 @@
 #include "DirectXCommon.h"
 #include "Input.h"
 #include "Model.h"
-#include "Player.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-
+#include <list>
 #include <vector>
 
-#include "Skydome.h"
-
-#include "MapChipField.h"
-
 #include "CameraController.h"
-
-#include "Enemy.h"
-
 #include "DeathParticles.h"
+#include "Enemy.h"
+#include "MapChipField.h"
+#include "Player.h"
+
+using namespace std;
 
 /// <summary>
 /// ゲームシーン
@@ -53,22 +50,20 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	void GenerateBlocks();
+	bool IsFinished();
 
 	void ChangePhase();
-
+	void GenerateBlocks();
 	void UpdateCamera();
-
 	void UpdateBlocks();
-
-	bool IsFinished() { return finished_; }
+	void CheckAllCollisions();
 
 private: // メンバ変数
-	enum class Phse {
-		kPlay,  //ゲームプレイ
-		kDeath, //デス演出
+
+	enum class Phase {
+		kPlay, // ゲームプレイ
+		kDeath, // デス演出
 	};
-	Phse phse_;
 
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -77,47 +72,24 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	// テクスチャハンドル
+	ViewProjection viewProjection_;
 	uint32_t textureHandle_ = 0;
-	// 3Dモデル
-	Model* modelPlayer_ = nullptr;
+
+	Player* player_ = nullptr;
+	Model* model_ = nullptr;
 	Model* modelBlock_ = nullptr;
 	Model* modelSkydome_ = nullptr;
 	Model* modelEnemy_ = nullptr;
-	Model* modelDeathParticles_ = nullptr;
-	// ワールドトランスフォームの初期化
-	WorldTransform worldTransform_;
-	// ビュープロジェクションの初期化
-	ViewProjection viewProjection_;
+	Model* modelDeathParticle_ = nullptr;
 
-	// 自キャラ
-	Player* player_ = nullptr;
-
-	// 敵キャラ
-	Enemy* enemy_ = nullptr;
-
-	// 縦横ブロック配列
-	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
-
-	// デバッグカメラ有効
-	bool isDebugCameraActive_ = false;
-	// デバッグカメラ
+	vector<vector<WorldTransform*>> worldTransformBlocks_;
+	WorldTransform worldTransformSkydome_;
 	DebugCamera* debugCamera_ = nullptr;
-
-	// 天球
-	Skydome* skydome_ = nullptr;
-
-	// マップチップの描画
-	MapChipField* mapChipField_ = nullptr;
-
-	CameraController* cameraController_ = nullptr;
-
-	std::list<Enemy*> enemies_;
-	Enemy* newEnemy = nullptr;
-
-	void CheckAllCollisions();
-
-	DeathParticles* deathParticles_ = nullptr;
-
+	bool isDebugCameraActive_ = false;
+	MapChipField* mapChipField_;
+	CameraController* cameraController = nullptr;
+	list<Enemy*> enemies_;
 	bool finished_ = false;
+	Phase phase_;
+	DeathParticles* deathParticles_ = nullptr;
 };
