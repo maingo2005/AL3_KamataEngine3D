@@ -20,6 +20,8 @@
 
 #include "Enemy.h"
 
+#include "DeathParticles.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -68,6 +70,7 @@ private: // メンバ変数
 	Model* modelBlock_ = nullptr;
 	Model* modelSkydome_ = nullptr;
 	Model* modelEnemy_ = nullptr;
+	Model* modelDeathParticles_ = nullptr;
 	// ワールドトランスフォームの初期化
 	WorldTransform worldTransform_;
 	// ビュープロジェクションの初期化
@@ -99,4 +102,6 @@ private: // メンバ変数
 	Enemy* newEnemy = nullptr;
 
 	void CheckAllCollisions();
+
+	DeathParticles* deathParticles_ = nullptr;
 };

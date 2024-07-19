@@ -1,8 +1,8 @@
 #include "myMath.h"
-#include <corecrt_math.h>
-#include <cmath>
-#include <numbers>
 #include <cassert>
+#include <cmath>
+#include <corecrt_math.h>
+#include <numbers>
 
 // 行列の掛け算
 Matrix4x4 Multiply(Matrix4x4& m1, Matrix4x4& m2) {
@@ -113,9 +113,7 @@ float Lerp(float x1, float x2, float t) { return (1.0f - t) * x1 + t * x2; }
 Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) { return Vector3(Lerp(v1.x, v2.x, t), Lerp(v1.y, v2.y, t), Lerp(v1.z, v2.z, t)); }
 
 bool IsCollision(const AABB& aabb1, const AABB& aabb2) {
-	return (aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) && 
-		(aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) && 
-		(aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z);
+	return (aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) && (aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) && (aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z);
 }
 
 Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
@@ -129,4 +127,23 @@ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	result.y /= w;
 	result.z /= w;
 	return result;
+}
+
+Matrix4x4 MakeRotateXMatrix(float radian) {
+	float cosTheta = std::cos(radian);
+	float sinTheta = std::sin(radian);
+	return {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, cosTheta, sinTheta, 0.0f, 0.0f, -sinTheta, cosTheta, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+}
+
+Matrix4x4 MakeRotateYMatrix(float radian) {
+	float cosTheta = std::cos(radian);
+	float sinTheta = std::sin(radian);
+	return {cosTheta, 0.0f, -sinTheta, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, sinTheta, 0.0f, cosTheta, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+}
+
+Matrix4x4 MakeRotateZMatrix(float radian) {
+
+	float cosTheta = std::cos(radian);
+	float sinTheta = std::sin(radian);
+	return {cosTheta, sinTheta, 0.0f, 0.0f, -sinTheta, cosTheta, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 }

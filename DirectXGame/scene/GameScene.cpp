@@ -20,6 +20,8 @@ GameScene::~GameScene() {
 	// 自キャラの開放
 	delete player_;
 
+	delete deathParticles_;
+
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
 	}
@@ -51,6 +53,7 @@ void GameScene::Initialize() {
 	modelBlock_ = Model::CreateFromOBJ("block");
 	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
 	modelEnemy_ = Model::CreateFromOBJ("enemy");
+	modelDeathParticles_ = Model::CreateFromOBJ("deathParticle");
 
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
@@ -99,6 +102,10 @@ void GameScene::Initialize() {
 	newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
 
 	enemies_.push_back(newEnemy);
+
+	deathParticles_ = new DeathParticles;
+	const Vector3& deathParticlesPosition = playerPosition;
+	deathParticles_->Initialize(modelDeathParticles_, &viewProjection_, deathParticlesPosition);
 }
 
 void GameScene::Update() {
@@ -152,6 +159,10 @@ void GameScene::Update() {
 			worldTransformBlockYoko->TransferMatrix();
 		}
 	}
+
+	if (deathParticles_) {
+		deathParticles_->Update();
+	}
 }
 
 void GameScene::Draw() {
@@ -199,6 +210,10 @@ void GameScene::Draw() {
 
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw();
+	}
+
+	if (deathParticles_) {
+		deathParticles_->Draw();
 	}
 
 	// 3Dオブジェクト描画後処理
