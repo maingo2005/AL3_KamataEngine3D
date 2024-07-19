@@ -55,7 +55,21 @@ public: // メンバ関数
 
 	void GenerateBlocks();
 
+	void ChangePhase();
+
+	void UpdateCamera();
+
+	void UpdateBlocks();
+
+	bool IsFinished() { return finished_; }
+
 private: // メンバ変数
+	enum class Phse {
+		kPlay,  //ゲームプレイ
+		kDeath, //デス演出
+	};
+	Phse phse_;
+
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
@@ -79,7 +93,7 @@ private: // メンバ変数
 	// 自キャラ
 	Player* player_ = nullptr;
 
-	//敵キャラ
+	// 敵キャラ
 	Enemy* enemy_ = nullptr;
 
 	// 縦横ブロック配列
@@ -93,7 +107,7 @@ private: // メンバ変数
 	// 天球
 	Skydome* skydome_ = nullptr;
 
-	//マップチップの描画
+	// マップチップの描画
 	MapChipField* mapChipField_ = nullptr;
 
 	CameraController* cameraController_ = nullptr;
@@ -104,4 +118,6 @@ private: // メンバ変数
 	void CheckAllCollisions();
 
 	DeathParticles* deathParticles_ = nullptr;
+
+	bool finished_ = false;
 };

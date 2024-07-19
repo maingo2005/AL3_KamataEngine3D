@@ -15,6 +15,8 @@ public:
 	void Update();
 	void Draw();
 
+	bool IsFinished() { return isFinished_; }
+
 private:
 	static inline const uint32_t kNumParticles = 8;
 	Model* model_ = nullptr;

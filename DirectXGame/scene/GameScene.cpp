@@ -103,65 +103,63 @@ void GameScene::Initialize() {
 
 	enemies_.push_back(newEnemy);
 
-	deathParticles_ = new DeathParticles;
-	const Vector3& deathParticlesPosition = playerPosition;
-	deathParticles_->Initialize(modelDeathParticles_, &viewProjection_, deathParticlesPosition);
+	phse_ = Phse::kPlay;
 }
 
 void GameScene::Update() {
 
-	// 自キャラの更新
-	player_->Update();
+	ChangePhase();
 
-	// 敵キャラの更新
-	for (Enemy* enemy : enemies_) {
-		enemy->Update();
-	}
+	switch (phse_) {
+	case Phse::kPlay:
 
-	// カメラの更新
-	cameraController_->Update();
+		worldTransform_.UpdateMatrix();
 
-#ifdef _DEBUG
-	if (input_->TriggerKey(DIK_1)) {
-		isDebugCameraActive_ = !isDebugCameraActive_;
-	}
-#endif
+		// 自キャラの更新
+		player_->Update();
 
-	// カメラ処理
-	if (isDebugCameraActive_) {
-		// デバッグカメラの更新
-		debugCamera_->Update();
-		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
-		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
-		// ビュープロジェクション行列の転送
-		viewProjection_.TransferMatrix();
-	} else {
-		viewProjection_.matView = cameraController_->GetViewProjection().matView;
-		viewProjection_.matView = cameraController_->GetViewProjection().matProjection;
-		// ビュープロジェクションの転送
-		viewProjection_.TransferMatrix();
-	}
-
-	// 天球の更新
-	skydome_->Update();
-
-	// 縦横ブロック更新
-	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
-		for (WorldTransform* worldTransformBlockYoko : worldTransformBlockTate) {
-			if (!worldTransformBlockYoko)
-				continue;
-
-			// アフィン変換行列の作成
-			worldTransformBlockYoko->UpdateMatrix();
-			worldTransformBlockYoko->matWorld_ = MakeAffineMatrix(worldTransformBlockYoko->scale_, worldTransformBlockYoko->rotation_, worldTransformBlockYoko->translation_);
-
-			// 定数バッファに転送
-			worldTransformBlockYoko->TransferMatrix();
+		// 敵キャラの更新
+		for (Enemy* enemy : enemies_) {
+			enemy->Update();
 		}
-	}
 
-	if (deathParticles_) {
-		deathParticles_->Update();
+		// カメラの更新
+		cameraController_->Update();
+
+		UpdateCamera();
+
+		UpdateBlocks();
+
+		// 天球の更新
+		skydome_->Update();
+
+		CheckAllCollisions();
+
+	case Phse::kDeath:
+
+		if (deathParticles_ && deathParticles_->IsFinished()) {
+			finished_ = true;
+		}
+
+		worldTransform_.UpdateMatrix();
+
+		// 敵キャラの更新
+		for (Enemy* enemy : enemies_) {
+			enemy->Update();
+		}
+
+		if (deathParticles_) {
+			deathParticles_->Update();
+		}
+
+		UpdateCamera();
+
+		UpdateBlocks();
+
+		// 天球の更新
+		skydome_->Update();
+
+		break;
 	}
 }
 
@@ -253,34 +251,87 @@ void GameScene::GenerateBlocks() {
 				worldTransformBlocks_[i][j] = worldTransform;
 				worldTransformBlocks_[i][j]->Initialize();
 				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
-			} /*else {
-			    worldTransformBlocks_[i][j] = nullptr;
-			}*/
+			}
 		}
 	}
 }
 
+// カメラ処理
+void GameScene::UpdateCamera() {
+#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_1)) {
+		isDebugCameraActive_ = !isDebugCameraActive_;
+	}
+#endif
+
+	if (isDebugCameraActive_) {
+		debugCamera_->Update();
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		viewProjection_.TransferMatrix();
+	} else {
+		viewProjection_.matView = cameraController_->GetViewProjection().matView;
+		viewProjection_.matProjection = cameraController_->GetViewProjection().matProjection;
+		viewProjection_.TransferMatrix();
+	}
+}
+
+// ブロック処理
+void GameScene::UpdateBlocks() {
+	// 縦横ブロック更新
+	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
+		for (WorldTransform* worldTransformBlockYoko : worldTransformBlockTate) {
+			if (!worldTransformBlockYoko)
+				continue;
+
+			// アフィン変換行列の作成
+			worldTransformBlockYoko->UpdateMatrix();
+			worldTransformBlockYoko->matWorld_ = MakeAffineMatrix(worldTransformBlockYoko->scale_, worldTransformBlockYoko->rotation_, worldTransformBlockYoko->translation_);
+
+			// 定数バッファに転送
+			worldTransformBlockYoko->TransferMatrix();
+		}
+	}
+}
+
+// ゲームフェーズ処理
+void GameScene::ChangePhase() {
+
+	switch (phse_) {
+	case Phse::kPlay:
+		if (player_->IsDeath()) {
+			phse_ = Phse::kDeath;
+			deathParticles_ = new DeathParticles;
+			const Vector3& deathParticlesPosition = player_->GetWorldPosition();
+			deathParticles_->Initialize(modelDeathParticles_, &viewProjection_, deathParticlesPosition);
+		}
+		break;
+	case Phse::kDeath:
+		break;
+	}
+}
+
 void GameScene::CheckAllCollisions() {
-	//判断対象1と2の座標
+	// 判断対象1と2の座標
 	AABB aabb1, aabb2;
 
-	#pragma region 自キャラと敵キャラの当たり判定
+#pragma region 自キャラと敵キャラの当たり判定
 	{
 		// 自キャラの座標
 		aabb1 = player_->GetAABB();
-		//自キャラと敵弾すべての当たり判定
+		// 自キャラと敵弾すべての当たり判定
 		for (Enemy* enemy : enemies_) {
-			//敵弾の座標
+			// 敵弾の座標
 			aabb2 = enemy->GetAABB();
 
-			//AABB同士の交差判定
+			// AABB同士の交差判定
 			if (IsCollision(aabb1, aabb2)) {
-				//自キャラの衝突時コールバックを呼び出す
+				// 自キャラの衝突時コールバックを呼び出す
 				player_->OnCollision(enemy);
-				//敵弾の衝突時コールバックを呼び出す
+				// 敵弾の衝突時コールバックを呼び出す
 				enemy->OnCollision(player_);
 			}
 		}
 	}
-	#pragma endregion
+#pragma endregion
 }

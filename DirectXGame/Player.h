@@ -29,7 +29,7 @@ public:
 	void Update();
 	void Draw();
 
-	//ワールド座標を取得
+	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 	AABB GetAABB();
 	void OnCollision(const Enemy* enemy);
@@ -39,6 +39,8 @@ public:
 	const Vector3& GetVelocity() const { return velocity_; }
 
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
+
+	bool IsDeath() { return isDeath_; }
 
 private:
 	static inline const float kAcceleratio = 0.1f;
@@ -66,6 +68,7 @@ private:
 	MapChipField* mapChipField_ = nullptr;
 
 	bool landing = false;
+	bool isDeath_ = false;
 
 	// マップチップとの当たり判定情報
 	struct CollisionMapInfo {
@@ -79,11 +82,11 @@ private:
 		Vector3 move;
 	};
 
-	//移動処理
+	// 移動処理
 	void InMovement();
-	//旋回制御
+	// 旋回制御
 	void TurningControl();
-	//マップ衝突チェック
+	// マップ衝突チェック
 	void CollisionDetection(CollisionMapInfo& info);
 	// 上
 	void Top(CollisionMapInfo& info);
