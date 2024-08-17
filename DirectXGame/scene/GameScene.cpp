@@ -48,7 +48,7 @@ void GameScene::Initialize() {
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 
 	player_ = new Player();
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(5, 16);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2, 16);
 	player_->Initialize(model_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 
