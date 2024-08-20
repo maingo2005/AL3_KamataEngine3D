@@ -20,7 +20,7 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 }
 
 void Player::Update() {
-
+	
 	InputMove();
 	CollisionMapInfo collisionMapInfo = {};
 	collisionMapInfo.move = velocity_;
