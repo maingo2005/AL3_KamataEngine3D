@@ -63,7 +63,7 @@ void MapChipField::LoadMapChipCsv(const std::string& filePath) {
 }
 
 Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) {
-	return Vector3(kBlockWidth * (kNumkBlockHorizontal - 35 - xIndex), kBlockHeight * (kNumkBlockVirtical - 1 - yIndex), 0);
+	return Vector3(kBlockWidth * xIndex, kBlockHeight * (kNumkBlockVirtical - 1 - yIndex), 0);
 }
 
 MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex) {
