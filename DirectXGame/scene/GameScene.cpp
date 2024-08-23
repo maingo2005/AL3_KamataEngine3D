@@ -24,6 +24,7 @@ GameScene::~GameScene() {
 	delete modelEnemy_;
 	delete model_;
 	delete modelBlock_;
+	delete modelGoal_;
 	delete debugCamera_;
 	delete modelSkydome_;
 	delete mapChipField_;
@@ -41,6 +42,7 @@ void GameScene::Initialize() {
 	model_ = Model::CreateFromOBJ("player");
 	modelEnemy_ = Model::CreateFromOBJ("enemy");
 	modelBlock_ = Model::CreateFromOBJ("block");
+	modelGoal_ = Model::CreateFromOBJ("player");
 	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
 	modelDeathParticle_ = Model::CreateFromOBJ("deathParticle", true);
 
@@ -74,6 +76,10 @@ void GameScene::Initialize() {
 
 	enemies_.push_back(newEnemy);
 
+	goal_ = new Goal();
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(2, 16);
+	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
+
 	phase_ = Phase::kPlay;
 }
 
@@ -86,6 +92,8 @@ void GameScene::Update() {
 		worldTransformSkydome_.UpdateMatrix(scale);
 
 		player_->Update();
+
+		goal_->Update();
 
 		cameraController->Update();
 
@@ -154,6 +162,9 @@ void GameScene::Draw() {
 			modelBlock_->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}
+
+	goal_->Draw();
+
 	if (!player_->IsDead()) {
 		player_->Draw();
 	}
@@ -271,6 +282,19 @@ void GameScene::CheckAllCollisions() {
 				player_->OnCollision(enemy);
 				enemy->OnCollision(player_);
 			}
+		}
+	}
+#pragma endregion
+
+#pragma region 自キャラとゴールの当たり判定
+	{
+		aabb1 = player_->GetAABB();
+
+		aabb2 = goal_->GetAABB();
+
+		if (IsCollision(aabb1, aabb2)) {
+			player_->OnCollision(goal_);
+			goal_->OnCollision(player_);
 		}
 	}
 #pragma endregion

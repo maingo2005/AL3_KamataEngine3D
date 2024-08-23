@@ -16,6 +16,7 @@
 #include "Enemy.h"
 #include "MapChipField.h"
 #include "Player.h"
+#include "Goal.h"
 
 using namespace std;
 
@@ -81,6 +82,7 @@ private: // メンバ変数
 	Model* modelSkydome_ = nullptr;
 	Model* modelEnemy_ = nullptr;
 	Model* modelDeathParticle_ = nullptr;
+	Model* modelGoal_ = nullptr;
 
 	vector<vector<WorldTransform*>> worldTransformBlocks_;
 	WorldTransform worldTransformSkydome_;
@@ -93,4 +95,5 @@ private: // メンバ変数
 	Phase phase_;
 	DeathParticles* deathParticles_ = nullptr;
 	Vector3 scale = {3,3,3};
+	Goal* goal_;
 };
