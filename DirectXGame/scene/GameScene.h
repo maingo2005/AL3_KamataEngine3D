@@ -64,6 +64,7 @@ private: // メンバ変数
 	enum class Phase {
 		kPlay, // ゲームプレイ
 		kDeath, // デス演出
+		kClear, //クリア演出
 	};
 
 	DirectXCommon* dxCommon_ = nullptr;

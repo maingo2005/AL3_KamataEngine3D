@@ -123,6 +123,8 @@ void GameScene::Update() {
 
 		UpdateCamera();
 		break;
+	case Phase::kClear:
+		break;
 	}
 }
 
@@ -209,6 +211,9 @@ void GameScene::ChangePhase() {
 		}
 		break;
 	case Phase::kDeath:
+
+		break;
+	case Phase::kClear:
 
 		break;
 	}
