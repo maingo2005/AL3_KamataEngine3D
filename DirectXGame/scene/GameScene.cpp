@@ -97,9 +97,9 @@ void GameScene::Update() {
 
 		cameraController->Update();
 
-		for (Enemy* enemy : enemies_) {
+		/*for (Enemy* enemy : enemies_) {
 			enemy->Update();
-		}
+		}*/
 
 		UpdateCamera();
 
@@ -122,6 +122,8 @@ void GameScene::Update() {
 		}
 
 		UpdateCamera();
+		break;
+	case Phase::kClear:
 		break;
 	}
 }
@@ -169,9 +171,9 @@ void GameScene::Draw() {
 		player_->Draw();
 	}
 
-	for (Enemy* enemy : enemies_) {
+	/*for (Enemy* enemy : enemies_) {
 		enemy->Draw();
-	}
+	}*/
 
 	if (deathParticles_) {
 		deathParticles_->Draw();
@@ -207,9 +209,20 @@ void GameScene::ChangePhase() {
 
 			deathParticles_->Initialize(modelDeathParticle_, &viewProjection_, deathParticlesPosition);
 		}
+		if (player_->IsHit()) {
+			phase_ = Phase::kDeath;
+
+			const Vector3& deathParticlesPosition = player_->GetWorldPosition();
+
+			deathParticles_ = new DeathParticles;
+
+			deathParticles_->Initialize(modelDeathParticle_, &viewProjection_, deathParticlesPosition);
+		}
 		break;
 	case Phase::kDeath:
 
+		break;
+	case Phase::kClear:
 		break;
 	}
 }
