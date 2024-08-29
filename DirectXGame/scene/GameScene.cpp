@@ -77,7 +77,7 @@ void GameScene::Initialize() {
 	enemies_.push_back(newEnemy);
 
 	goal_ = new Goal();
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(2, 16);
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(98, 18);
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
 
 	phase_ = Phase::kPlay;
@@ -122,8 +122,6 @@ void GameScene::Update() {
 		}
 
 		UpdateCamera();
-		break;
-	case Phase::kClear:
 		break;
 	}
 }
@@ -211,9 +209,6 @@ void GameScene::ChangePhase() {
 		}
 		break;
 	case Phase::kDeath:
-
-		break;
-	case Phase::kClear:
 
 		break;
 	}

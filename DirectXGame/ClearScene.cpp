@@ -8,12 +8,10 @@
 
 ClearScene::~ClearScene() {
 	delete modelTitle_;
-	delete modelPlayer_;
 }
 
 void ClearScene::Initialize() {
 	modelTitle_ = Model::CreateFromOBJ("text", true);
-	modelPlayer_ = Model::CreateFromOBJ("player");
 	viewProjection_.Initialize();
 
 	const float kPlayerScale = 10.0f;
@@ -50,6 +48,5 @@ void ClearScene::Draw() {
 
 	Model::PreDraw(commandList);
 	modelTitle_->Draw(worldTransformTitle_, viewProjection_);
-	modelPlayer_->Draw(worldTransformPlayer_, viewProjection_);
 	Model::PostDraw();
 }

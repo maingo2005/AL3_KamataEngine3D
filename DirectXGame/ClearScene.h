@@ -22,7 +22,6 @@ private:
 	WorldTransform worldTransformPlayer_;
 
 	Model* modelTitle_ = nullptr;
-	Model* modelPlayer_ = nullptr;
 
 	float counter_ = 0.0f;
 	bool finished_ = false;

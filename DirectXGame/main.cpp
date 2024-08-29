@@ -8,10 +8,12 @@
 #include "WinApp.h"
 
 #include "TitleScene.h"
+#include "ClearScene.h"
 
 // グローバル変数
 GameScene* gameScene = nullptr;
 TitleScene* titleScene = nullptr;
+ClearScene* clearScene = nullptr;
 
 // シーン（型）
 enum class Scene {
@@ -19,6 +21,7 @@ enum class Scene {
 
 	kTitle,
 	kGame,
+	kClear,
 };
 
 // 現在シーン（型）
@@ -41,6 +44,16 @@ void ChangeScene() {
 	case Scene::kGame:
 		if (gameScene->IsFinished()) {
 			// シーン変更
+			scene = Scene::kClear;
+			delete gameScene;
+			gameScene = nullptr;
+			titleScene = new TitleScene;
+			titleScene->Initialize();
+		}
+		break;
+	case Scene::kClear:
+		if (gameScene->IsFinished()) {
+			// シーン変更
 			scene = Scene::kTitle;
 			delete gameScene;
 			gameScene = nullptr;
@@ -59,6 +72,9 @@ void UpdateScene() {
 	case Scene::kGame:
 		gameScene->Update();
 		break;
+	case Scene::kClear:
+		clearScene->Update();
+		break;
 	}
 }
 
@@ -69,6 +85,9 @@ void DrawScene() {
 		break;
 	case Scene::kGame:
 		gameScene->Draw();
+		break;
+	case Scene::kClear:
+		clearScene->Draw();
 		break;
 	}
 }
@@ -162,6 +181,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 各種解放
 	delete titleScene;
 	delete gameScene;
+	delete clearScene;
 	// 3Dモデル解放
 	Model::StaticFinalize();
 	audio->Finalize();
