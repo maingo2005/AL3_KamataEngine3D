@@ -42,7 +42,7 @@ void GameScene::Initialize() {
 	model_ = Model::CreateFromOBJ("player");
 	modelEnemy_ = Model::CreateFromOBJ("enemy");
 	modelBlock_ = Model::CreateFromOBJ("block");
-	modelGoal_ = Model::CreateFromOBJ("player");
+	modelGoal_ = Model::CreateFromOBJ("Goal");
 	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
 	modelDeathParticle_ = Model::CreateFromOBJ("deathParticle", true);
 

@@ -11,7 +11,7 @@ ClearScene::~ClearScene() {
 }
 
 void ClearScene::Initialize() {
-	modelTitle_ = Model::CreateFromOBJ("text", true);
+	modelTitle_ = Model::CreateFromOBJ("Clear", true);
 	viewProjection_.Initialize();
 
 	const float kPlayerScale = 10.0f;
